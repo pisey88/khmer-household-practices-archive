@@ -8,16 +8,16 @@
 
 const collection = {
   // What does your archive collect? e.g. "Khmer Proverbs"
-  name: "Traditional Khmer Children's Games",
+  name: "Khmer Household Practices Before Modern Appliances",
 
   // One sentence: what is this archive, and why does it matter?
-  description: "An archive documenting traditional Khmer children's games, including their rules, songs, and how they were played.",
+  description: "An archive documenting how traditional Khmer households handled everyday tasks before modern appliances and conveniences became common.",
 
   // Who is building this archive? Your name, as you want it shown.
   curator: "LY Sokpisey",
 
   // Where does your knowledge come from? A person, a place, a community.
-  source: "Grandparents and older community members in my province who remember playing these games when they were young.",
+  source: "Grandparents and older community members in my province who remember and experienced these traditional household practices.",
 };
 
 export default collection;
