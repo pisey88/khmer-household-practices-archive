@@ -1,5 +1,3 @@
-import collection from "../collection.config.js";
-
 const styles = {
   wrap: {
     maxWidth: 720,
@@ -8,15 +6,15 @@ const styles = {
   },
   kicker: {
     fontFamily: "'Courier New', monospace",
-    color: "#2EE6A8",
+    color: "#E8A33D",           // was #2EE6A8
     fontSize: 14,
     letterSpacing: 1,
   },
   title: {
-    fontSize: 48,
+    fontSize: 38,                // was 48
     fontWeight: 700,
     margin: "16px 0 12px",
-    lineHeight: 1.1,
+    lineHeight: 1.15,            // slightly loosened for the smaller size
   },
   description: {
     fontSize: 18,
@@ -44,7 +42,7 @@ const styles = {
   count: {
     fontFamily: "'Courier New', monospace",
     fontSize: 14,
-    color: "#2EE6A8",
+    color: "#E8A33D",            // was #2EE6A8
     marginTop: 48,
   },
   footer: {
@@ -55,30 +53,3 @@ const styles = {
     color: "#5A6373",
   },
 };
-
-export default function Home() {
-  return (
-    <main style={styles.wrap}>
-      <p style={styles.kicker}>KHMER LIVING ARCHIVE</p>
-      <h1 style={styles.title}>{collection.name}</h1>
-      <p style={styles.description}>{collection.description}</p>
-
-      <div style={styles.card}>
-        <p style={styles.cardLabel}>CURATED BY</p>
-        <p style={styles.cardValue}>{collection.curator}</p>
-      </div>
-      <div style={styles.card}>
-        <p style={styles.cardLabel}>SOURCE</p>
-        <p style={styles.cardValue}>{collection.source}</p>
-      </div>
-
-      <p style={styles.count}>entries in the archive: 0 (for now)</p>
-
-      <footer style={styles.footer}>
-        Built in ICT 340 — Vibe Coding, American University of Phnom Penh, Fall
-        2026. This archive is under construction all semester. Come back in
-        December.
-      </footer>
-    </main>
-  );
-}

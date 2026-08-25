@@ -1,3 +1,5 @@
+// app/layout.js
+
 import collection from "../collection.config.js";
 
 export const metadata = {
