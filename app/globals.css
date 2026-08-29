@@ -1,0 +1,394 @@
+/* ==========================================================================
+   Khmer Household Archive — Design Tokens
+   ========================================================================== */
+
+:root {
+  /* -- Color palette --------------------------------------------------- */
+  --color-parchment: #f2ebdc;   /* main background */
+  --color-charcoal: #262220;    /* primary text, dark sections */
+  --color-terracotta: #b5573b;  /* accent — CTAs, category labels, hover */
+  --color-green: #445241;       /* secondary accent */
+  --color-gold: #b8935a;        /* borders, dividers, subtle accents */
+  --color-brown: #40332a;       /* headings on light background */
+
+  /* Muted/utility tones derived from the palette, for body text and rules */
+  --color-text-muted: #5c554d;
+  --color-border: rgba(38, 34, 32, 0.12);
+
+  /* -- Fonts (wired up in layout.js via next/font) ---------------------- */
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* -- Type scale --------------------------------------------------------
+     Fluid sizes so the hero doesn't need separate mobile overrides. */
+  --font-size-hero: clamp(2.5rem, 5vw + 1rem, 4.5rem);
+  --font-size-h2: clamp(1.75rem, 2.5vw + 1rem, 2.75rem);
+  --font-size-h3: clamp(1.25rem, 1.5vw + 1rem, 1.75rem);
+  --font-size-body: 1rem;
+  --font-size-label: 0.75rem;
+
+  /* -- Spacing scale ------------------------------------------------------ */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 8rem;
+}
+
+/* -- Base reset -------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-parchment);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  color: var(--color-brown);
+  line-height: 1.15;
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--font-size-hero);
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+}
+
+h3 {
+  font-size: var(--font-size-h3);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+/* Small uppercase archival labels — eyebrow text, "SOURCE", "PLACE", etc. */
+.label {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.nav-title {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  color: var(--color-brown);
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.nav-link {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-charcoal);
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--color-terracotta);
+}
+
+/* Nav collapses to stacked/centered on narrow screens rather than
+   squeezing links into one cramped row. */
+@media (max-width: 480px) {
+  .nav {
+    flex-direction: column;
+    gap: var(--space-xs);
+    text-align: center;
+  }
+
+  .nav-links {
+    gap: var(--space-sm);
+  }
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.footer {
+  padding: var(--space-lg) var(--space-md);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.footer-note {
+  margin-top: var(--space-xs);
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+
+.hero {
+  padding: var(--space-xl) var(--space-md) var(--space-lg);
+  max-width: 46rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hero h1 {
+  margin-top: var(--space-sm);
+}
+
+.hero-description {
+  margin-top: var(--space-sm);
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+}
+
+.hero-meta {
+  margin-top: var(--space-md);
+}
+
+.hero-cta {
+  display: inline-block;
+  margin-top: var(--space-md);
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--color-terracotta);
+  color: var(--color-terracotta);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.hero-cta:hover {
+  opacity: 0.7;
+}
+
+/* ==========================================================================
+   About
+   ========================================================================== */
+
+.about {
+  padding: var(--space-lg) var(--space-md);
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--space-lg);
+  max-width: 72rem;
+  margin: 0 auto;
+  border-top: 1px solid var(--color-border);
+}
+
+.about-text p {
+  margin-top: var(--space-sm);
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+  max-width: 34rem;
+}
+
+.about-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  justify-content: center;
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+}
+
+.stat-number {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  color: var(--color-terracotta);
+  line-height: 1;
+}
+
+.stat-number-sm {
+  font-size: 2rem;
+  color: var(--color-green);
+}
+
+.stat-phrase {
+  margin-top: var(--space-xs);
+}
+
+.stat-phrase-text {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.4rem;
+  color: var(--color-brown);
+}
+
+@media (max-width: 768px) {
+  .about {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   Entry list
+   ========================================================================== */
+
+.entry-list {
+  padding: var(--space-lg) var(--space-md);
+  max-width: 72rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.entry-card {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: var(--space-lg);
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-lg);
+}
+
+/* Alternate image/text sides on even-indexed (reverse) entries */
+.entry-card-reverse {
+  grid-template-columns: 1fr 1.1fr;
+}
+
+.entry-card-reverse .entry-image-wrap {
+  order: 2;
+}
+
+.entry-card-reverse .entry-content {
+  order: 1;
+}
+
+.entry-image-wrap {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.entry-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.entry-image-wrap:hover .entry-image {
+  transform: scale(1.03);
+}
+
+.entry-eyebrow {
+  color: var(--color-terracotta);
+}
+
+.entry-khmer {
+  margin-top: var(--space-xs);
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--color-brown);
+}
+
+.entry-description {
+  margin-top: var(--space-sm);
+  color: var(--color-text-muted);
+}
+
+.entry-meta {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.entry-meta dt {
+  margin-bottom: 2px;
+}
+
+.entry-meta dd {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-charcoal);
+}
+
+/* On mobile: always image-on-top, text-below — don't try to preserve the
+   left/right alternation at narrow widths. */
+@media (max-width: 640px) {
+  .entry-card,
+  .entry-card-reverse {
+    grid-template-columns: 1fr;
+  }
+
+  .entry-card-reverse .entry-image-wrap,
+  .entry-card-reverse .entry-content {
+    order: initial;
+  }
+
+  .entry-meta {
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-md);
+  }
+}
+
+/* ==========================================================================
+   Scroll reveal animation
+   ========================================================================== */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Respect users who've asked for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

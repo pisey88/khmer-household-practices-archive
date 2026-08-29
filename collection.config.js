@@ -1,23 +1,21 @@
-// ============================================================
-//  YOUR ARCHIVE STARTS HERE
+// collection.config.js
 //
-//  This is the only file you edit in Lab 1.
-//  Change the four values below, commit, and watch your
-//  live site update itself.
-// ============================================================
+// Site-wide / collection-level info — things that describe the archive as
+// a whole, not any single entry. Keeping this separate from entries.js
+// means the About section's stats stay in sync automatically instead of
+// being hand-typed numbers that can drift out of date.
 
-const collection = {
-  // What does your archive collect? e.g. "Khmer Proverbs"
-  name: "Khmer Household Practices Before Modern Appliances",
+import { entries } from "./data/entries.js";
 
-  // One sentence: what is this archive, and why does it matter?
-  description: "An archive documenting how traditional Khmer households handled everyday tasks before modern appliances and conveniences became common.",
+export const collectionConfig = {
+  siteTitle: "Khmer Household Archive",
+  tagline: "Before Modern Appliances",
+  description:
+    "Everyday knowledge, tools, and memories from households in Kampong Speu Province, Cambodia.",
 
-  // Who is building this archive? Your name, as you want it shown.
-  curator: "LY Sokpisey",
+  province: "Kampong Speu",
+  country: "Cambodia",
 
-  // Where does your knowledge come from? A person, a place, a community.
-  source: "Grandparents and older community members in my province who remember and experienced these traditional household practices.",
+  // Derived, not hand-typed — always accurate even as entries are added.
+  entryCount: entries.length,
 };
-
-export default collection;
