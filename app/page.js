@@ -1,8 +1,8 @@
-﻿import Navigation from "../components/Navigation.js";
-import Hero from "../components/Hero.js";
-import AboutCollection from "../components/AboutCollection.js";
-import EntryList from "../components/EntryList.js";
-import Footer from "../components/Footer.js";
+import Navigation from "../components/layout/Navigation.js";
+import Hero from "../components/archive/Hero.js";
+import AboutCollection from "../components/archive/AboutCollection.js";
+import ArchiveGrid from "../components/archive/ArchiveGrid.js";
+import Footer from "../components/layout/Footer.js";
 
 export default function HomePage() {
   return (
@@ -11,7 +11,7 @@ export default function HomePage() {
       <main>
         <Hero />
         <AboutCollection />
-        <EntryList />
+        <ArchiveGrid />
       </main>
       <Footer />
     </>

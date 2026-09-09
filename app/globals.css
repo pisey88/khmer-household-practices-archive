@@ -266,13 +266,16 @@ a {
 }
 
 /* ==========================================================================
-   Entry list
+   Archive grid (search/filter + entry cards)
    ========================================================================== */
 
-.entry-list {
+.archive-grid {
   padding: var(--space-lg) var(--space-md);
   max-width: 72rem;
   margin: 0 auto;
+}
+
+.archive-grid__grid {
   display: flex;
   flex-direction: column;
   gap: var(--space-xl);
@@ -301,16 +304,14 @@ a {
 }
 
 .entry-image-wrap {
+  position: relative; /* required for next/image `fill` */
   aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: 2px;
 }
 
 .entry-image {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
-  display: block;
   transition: transform 0.4s ease;
 }
 
@@ -390,5 +391,112 @@ a {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+}
+
+/* ==========================================================================
+   Search & Filter
+   ========================================================================== */
+
+.search-filter {
+  margin-bottom: 2.5rem;
+}
+
+.search-filter__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.search-filter__input {
+  width: 100%;
+  padding: 0.85rem 2.5rem 0.85rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--color-charcoal);
+  background: #fff;
+  border: 1px solid rgba(38, 34, 32, 0.2);
+  border-radius: 6px;
+  transition: border-color 0.2s ease;
+}
+
+.search-filter__input:focus {
+  outline: none;
+  border-color: var(--color-terracotta);
+}
+
+.search-filter__clear {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--color-charcoal);
+  opacity: 0.5;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.search-filter__clear:hover {
+  opacity: 1;
+}
+
+.search-filter__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.search-filter__chip {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(38, 34, 32, 0.25);
+  background: transparent;
+  color: var(--color-charcoal);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.search-filter__chip:hover {
+  border-color: var(--color-terracotta);
+}
+
+.search-filter__chip--active {
+  background: var(--color-terracotta);
+  border-color: var(--color-terracotta);
+  color: #fff;
+}
+
+.search-filter__chip-count {
+  opacity: 0.65;
+  font-size: 0.8em;
+}
+
+.search-filter__count {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--color-charcoal);
+  opacity: 0.65;
+}
+
+.archive-grid__empty {
+  font-family: var(--font-sans);
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--color-charcoal);
+  opacity: 0.7;
+}
+
+@media (max-width: 480px) {
+  .search-filter__chips {
+    gap: 0.4rem;
+  }
+  .search-filter__chip {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.75rem;
   }
 }

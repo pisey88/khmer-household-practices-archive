@@ -1,8 +1,8 @@
 "use client";
 
-// components/RevealOnScroll.js
+// components/common/RevealOnScroll.js
 //
-// Wraps a child element and adds a "is-visible" class once it scrolls into
+// Wraps a child element and adds an "is-visible" class once it scrolls into
 // view, which globals.css uses to trigger a fade/slide-up. If JS is slow
 // or disabled, .reveal's base CSS still shows the content — the animation
 // is a bonus, not a requirement to read the page.

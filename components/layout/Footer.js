@@ -1,6 +1,6 @@
-// components/Footer.js
+// components/layout/Footer.js
 
-import { collectionConfig } from "../collection.config.js";
+import { collectionConfig } from "../../collection.config.js";
 
 export default function Footer() {
   return (

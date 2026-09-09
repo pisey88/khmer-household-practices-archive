@@ -5,7 +5,7 @@
 // means the About section's stats stay in sync automatically instead of
 // being hand-typed numbers that can drift out of date.
 
-import { entries } from "./data/entries.js";
+import { entries } from "./lib/entries.js";
 
 export const collectionConfig = {
   siteTitle: "Khmer Household Archive",
