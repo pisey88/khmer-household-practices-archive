@@ -67,7 +67,7 @@ export default function ArchiveGrid() {
   }, []);
 
   const filteredEntries = useMemo(() => {
-    const q = debouncedQuery.trim().toLowerCase();
+    const q = debouncedQuery.trim().normalize("NFC").toLowerCase();
 
     return entries.filter((entry) => {
       const matchesCategory =
@@ -84,6 +84,7 @@ export default function ArchiveGrid() {
         entry.place,
       ]
         .filter(Boolean)
+        .map((field) => field.normalize("NFC"))
         .join(" ")
         .toLowerCase();
 
@@ -106,7 +107,7 @@ export default function ArchiveGrid() {
 
       {filteredEntries.length === 0 ? (
         <p className="archive-grid__empty">
-          No entries match your search. Try a different term or category.
+          No entries match your search. Try a different term or category. / មិនមានលទ្ធផលដែលផ្គូរដោយការស្វែងរក សូមពន្យាយពីត្រឹមត្រូវចំណាត់ចំណាតឬចំណាត់ថ្មី។
         </p>
       ) : (
         <div className="archive-grid__grid">
