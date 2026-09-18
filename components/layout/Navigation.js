@@ -20,10 +20,30 @@ function ChevronIcon() {
   );
 }
 
+function HamburgerIcon() {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        d="M4 6h16M4 12h16M4 18h16"
+      />
+    </svg>
+  );
+}
+
 export default function Navigation() {
   const { t } = useLanguage();
   const [user, setUser] = useState(null);
   const [authError, setAuthError] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
   const handleHomeClick = (event) => {
@@ -75,6 +95,7 @@ export default function Navigation() {
     await supabase.auth.signOut();
     setUser(null);
     setProfileOpen(false);
+    setNavOpen(false);
   };
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "A";
@@ -84,11 +105,21 @@ export default function Navigation() {
       <a href="/" className="nav-title" onClick={handleHomeClick}>
         {t("siteTitle")}
       </a>
-      <div className="nav-right">
+      <button
+        type="button"
+        className="nav-hamburger"
+        aria-label={t("navMenuLabel")}
+        aria-expanded={navOpen}
+        aria-controls="mobile-navigation"
+        onClick={() => setNavOpen((isOpen) => !isOpen)}
+      >
+        <HamburgerIcon />
+      </button>
+      <div id="mobile-navigation" className={`nav-right ${navOpen ? "nav-right--open" : ""}`}>
         <nav className="nav-links">
-          <a href="/" className="nav-link nav-link--active" onClick={handleHomeClick}>{t("navHome")}</a>
-          <a href="#archive" className="nav-link">{t("navArchive")}</a>
-          <a href="#about" className="nav-link">{t("navAbout")}</a>
+          <a href="/" className="nav-link nav-link--active" onClick={(event) => { handleHomeClick(event); setNavOpen(false); }}>{t("navHome")}</a>
+          <a href="#archive" className="nav-link" onClick={() => setNavOpen(false)}>{t("navArchive")}</a>
+          <a href="#about" className="nav-link" onClick={() => setNavOpen(false)}>{t("navAbout")}</a>
           {authError ? (
             <span className="nav-auth-error">{t("navAuthUnavailable")}</span>
           ) : user ? (
@@ -99,7 +130,7 @@ export default function Navigation() {
                 aria-label={t("profileMenuLabel")}
                 aria-expanded={profileOpen}
                 aria-haspopup="menu"
-                onClick={() => setProfileOpen((isOpen) => !isOpen)}
+                onClick={() => setProfileOpen(!profileOpen)}
               >
                 <span>{userInitial}</span>
                 <ChevronIcon />

@@ -3,6 +3,7 @@
 import { Fraunces, Inter, Noto_Sans_Khmer } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider, useLanguage } from "../components/common/LanguageProvider.js";
+import Navigation from "../components/layout/Navigation.js";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -33,7 +34,10 @@ function RootContent({ children }) {
       lang={language}
       className={`${fraunces.variable} ${inter.variable} ${notoSansKhmer.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <Navigation />
+        {children}
+      </body>
     </html>
   );
 }
