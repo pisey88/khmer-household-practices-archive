@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "../../lib/supabase/client.js";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "../../components/common/LanguageProvider.js";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { t } = useLanguage();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,6 +48,7 @@ export default function LoginPage() {
     alignItems: "center",
     justifyContent: "center",
     padding: "2rem",
+    marginTop: "-80px",
   };
 
   const formStyle = {
@@ -120,6 +123,9 @@ export default function LoginPage() {
   return (
     <div style={pageStyle}>
       <form onSubmit={handleSubmit} style={formStyle}>
+        <a href="/" style={{ color: "#b8935a", display: "inline-block", marginBottom: "1.5rem", textDecoration: "none" }}>
+          {t("authBackHome")}
+        </a>
         <h1 style={titleStyle}>Log In</h1>
 
         <div style={inputGroupStyle}>

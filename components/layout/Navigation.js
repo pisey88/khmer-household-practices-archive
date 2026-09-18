@@ -10,6 +10,7 @@
 import { useLanguage } from "../common/LanguageProvider.js";
 import LanguageToggle from "../common/LanguageToggle.js";
 import { createClient, isSupabaseConfigured } from "../../lib/supabase/client.js";
+import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 
 function ChevronIcon() {
@@ -41,6 +42,7 @@ function HamburgerIcon() {
 
 export default function Navigation() {
   const { t } = useLanguage();
+  const pathname = usePathname();
   const [user, setUser] = useState(null);
   const [authError, setAuthError] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
@@ -99,6 +101,8 @@ export default function Navigation() {
   };
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "A";
+
+  if (pathname === "/login" || pathname === "/signup") return null;
 
   return (
     <header className="nav">
