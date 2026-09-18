@@ -9,9 +9,23 @@
 
 import { useLanguage } from "../common/LanguageProvider.js";
 import LanguageToggle from "../common/LanguageToggle.js";
+import { createClient, isSupabaseConfigured } from "../../lib/supabase/client.js";
+import { useState, useEffect, useRef } from "react";
+
+function ChevronIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
 
 export default function Navigation() {
   const { t } = useLanguage();
+  const [user, setUser] = useState(null);
+  const [authError, setAuthError] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef(null);
   const handleHomeClick = (event) => {
     if (window.location.pathname === "/") {
       event.preventDefault();
@@ -19,15 +33,95 @@ export default function Navigation() {
     }
   };
 
+  useEffect(() => {
+    if (!isSupabaseConfigured()) {
+      setAuthError(true);
+      return;
+    }
+
+    const supabase = createClient();
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUser(data.session?.user || null);
+    };
+
+    getSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user || null);
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, []);
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    setUser(null);
+    setProfileOpen(false);
+  };
+
+  const userInitial = user?.email?.charAt(0).toUpperCase() || "A";
+
   return (
     <header className="nav">
-      <span className="nav-title">{t("siteTitle")}</span>
+      <a href="/" className="nav-title" onClick={handleHomeClick}>
+        {t("siteTitle")}
+      </a>
       <div className="nav-right">
         <nav className="nav-links">
-          <a href="/" className="nav-link" onClick={handleHomeClick}>{t("navHome")}</a>
+          <a href="/" className="nav-link nav-link--active" onClick={handleHomeClick}>{t("navHome")}</a>
           <a href="#archive" className="nav-link">{t("navArchive")}</a>
           <a href="#about" className="nav-link">{t("navAbout")}</a>
+          {authError ? (
+            <span className="nav-auth-error">{t("navAuthUnavailable")}</span>
+          ) : user ? (
+            <div className="nav-profile" ref={profileRef}>
+              <button
+                type="button"
+                className="nav-avatar"
+                aria-label={t("profileMenuLabel")}
+                aria-expanded={profileOpen}
+                aria-haspopup="menu"
+                onClick={() => setProfileOpen((isOpen) => !isOpen)}
+              >
+                <span>{userInitial}</span>
+                <ChevronIcon />
+              </button>
+              {profileOpen && (
+                <div className="nav-profile-menu" role="menu">
+                  <p className="nav-profile-email">{user.email}</p>
+                  <div className="nav-profile-divider" />
+                  <button type="button" className="nav-profile-logout" onClick={handleLogout} role="menuitem">
+                    {t("navLogout")}
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="nav-auth-links">
+              <a href="/login" className="nav-auth-link">{t("navLogin")}</a>
+              <a href="/signup" className="nav-signup-link">{t("navSignup")}</a>
+            </div>
+          )}
         </nav>
+        <div className="nav-actions-divider" aria-hidden="true" />
         <LanguageToggle />
       </div>
     </header>

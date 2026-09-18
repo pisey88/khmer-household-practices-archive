@@ -18,6 +18,12 @@ export default function LoginPage() {
 
     const supabase = createClient();
 
+    if (!supabase) {
+      setLoading(false);
+      setError("Authentication is not configured for this environment.");
+      return;
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,

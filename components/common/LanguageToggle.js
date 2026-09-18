@@ -6,7 +6,7 @@ export default function LanguageToggle() {
   const { language, setLanguage, t } = useLanguage();
 
   return (
-    <div className="language-toggle" aria-label={t("languageToggleLabel")}>
+    <div className="language-toggle" aria-label={t("languageToggleLabel")} role="group">
       <button
         type="button"
         className={`language-toggle__btn ${language === "en" ? "active" : ""}`}
