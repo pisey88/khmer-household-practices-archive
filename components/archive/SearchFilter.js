@@ -1,5 +1,7 @@
 "use client";
 
+import { useLanguage } from "../common/LanguageProvider.js";
+
 // components/archive/SearchFilter.js
 //
 // Presentational search + category-chip controls. ArchiveGrid owns all
@@ -16,6 +18,7 @@ export default function SearchFilter({
   resultCount,
   totalCount,
 }) {
+  const { t } = useLanguage();
   const handleKeyDown = (e) => {
     if (e.key === "Escape" && query) {
       onQueryChange("");
@@ -28,25 +31,25 @@ export default function SearchFilter({
         <input
           type="text"
           className="search-filter__input"
-          placeholder="Search entries (title, Khmer name, description)…"
+          placeholder={t("searchPlaceholder")}
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          aria-label="Search archive entries"
+          aria-label={t("searchAriaLabel")}
         />
         {query && (
           <button
             type="button"
             className="search-filter__clear"
             onClick={() => onQueryChange("")}
-            aria-label="Clear search"
+            aria-label={t("clearAriaLabel")}
           >
             ✕
           </button>
         )}
       </div>
 
-      <div className="search-filter__chips" role="group" aria-label="Filter by category">
+      <div className="search-filter__chips" role="group" aria-label={t("filterAriaLabel")}>
         <button
           type="button"
           className={
@@ -54,7 +57,7 @@ export default function SearchFilter({
           }
           onClick={() => onCategoryChange("All")}
         >
-          All <span className="search-filter__chip-count">({totalCount})</span>
+          {t("categoryAll")} <span className="search-filter__chip-count">({totalCount})</span>
         </button>
         {categories.map((cat) => (
           <button
@@ -66,7 +69,7 @@ export default function SearchFilter({
             }
             onClick={() => onCategoryChange(cat)}
           >
-            {cat} <span className="search-filter__chip-count">({categoryCounts[cat] ?? 0})</span>
+            {t(`category${cat.replace(/\s/g, "")}`)} <span className="search-filter__chip-count">({categoryCounts[cat] ?? 0})</span>
           </button>
         ))}
       </div>
@@ -74,7 +77,10 @@ export default function SearchFilter({
       {/* aria-live so screen reader users hear the result count update as
           they type or switch category, without needing to re-focus anything */}
       <p className="search-filter__count" aria-live="polite">
-        {resultCount} {resultCount === 1 ? "entry" : "entries"} found
+        {t("resultsFound", {
+          count: resultCount,
+          entries: resultCount === 1 ? "entry" : "entries",
+        })}
       </p>
     </div>
   );

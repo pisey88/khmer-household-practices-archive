@@ -14,6 +14,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { entries } from "../../lib/entries.js";
 import { useDebouncedValue } from "../../lib/useDebouncedValue.js";
+import { useLanguage } from "../common/LanguageProvider.js";
 import EntryCard from "./EntryCard";
 import SearchFilter from "./SearchFilter";
 
@@ -27,6 +28,7 @@ function readInitialStateFromURL() {
 }
 
 export default function ArchiveGrid() {
+  const { language, pick, t } = useLanguage();
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [hydrated, setHydrated] = useState(false);
@@ -67,7 +69,12 @@ export default function ArchiveGrid() {
   }, []);
 
   const filteredEntries = useMemo(() => {
-    const q = debouncedQuery.trim().normalize("NFC").toLowerCase();
+    const q = debouncedQuery
+      .trim()
+      .replace(/^("|')([\s\S]*)\1$/, "$2")
+      .trim()
+      .normalize("NFC")
+      .toLowerCase();
 
     return entries.filter((entry) => {
       const matchesCategory =
@@ -84,13 +91,13 @@ export default function ArchiveGrid() {
         entry.place,
       ]
         .filter(Boolean)
-        .map((field) => field.normalize("NFC"))
+        .map((field) => pick(field).normalize("NFC"))
         .join(" ")
         .toLowerCase();
 
       return haystack.includes(q);
     });
-  }, [debouncedQuery, activeCategory]);
+  }, [debouncedQuery, activeCategory, language, pick]);
 
   return (
     <section id="archive" className="archive-grid">
@@ -107,7 +114,7 @@ export default function ArchiveGrid() {
 
       {filteredEntries.length === 0 ? (
         <p className="archive-grid__empty">
-          No entries match your search. Try a different term or category. / មិនមានលទ្ធផលដែលផ្គូរដោយការស្វែងរក សូមពន្យាយពីត្រឹមត្រូវចំណាត់ចំណាតឬចំណាត់ថ្មី។
+          {t("noResults")}
         </p>
       ) : (
         <div className="archive-grid__grid">

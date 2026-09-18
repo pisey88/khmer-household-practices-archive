@@ -1,24 +1,21 @@
 // components/archive/AboutCollection.js
 
+"use client";
+
 import { collectionConfig } from "../../collection.config.js";
+import { useLanguage } from "../common/LanguageProvider.js";
 import RevealOnScroll from "../common/RevealOnScroll.js";
 
 export default function AboutCollection() {
+  const { t } = useLanguage();
   const entryCount = String(collectionConfig.entryCount).padStart(2, "0");
 
   return (
     <section id="about" className="about">
       <RevealOnScroll>
         <div className="about-text">
-          <h2>About the Collection</h2>
-          <p>
-            This archive documents traditional household practices in{" "}
-            {collectionConfig.province} Province before modern appliances
-            became common. It preserves everyday knowledge about cooking,
-            lighting, food preparation, rice processing, and clothing care
-            through memories shared by grandparents and older community
-            members.
-          </p>
+          <h2>{t("aboutHeading")}</h2>
+          <p>{t("aboutBody")}</p>
         </div>
       </RevealOnScroll>
 
@@ -26,14 +23,14 @@ export default function AboutCollection() {
         <div className="about-stats">
           <div className="stat stat-primary">
             <span className="stat-number">{entryCount}</span>
-            <span className="label">Archive Entries</span>
+            <span className="label">{t("statArchiveEntries")}</span>
           </div>
           <div className="stat">
             <span className="stat-number stat-number-sm">01</span>
-            <span className="label">Province</span>
+            <span className="label">{t("statProvince")}</span>
           </div>
           <div className="stat stat-phrase">
-            <span className="stat-phrase-text">Generations of Memory</span>
+            <span className="stat-phrase-text">{t("statGenerations")}</span>
           </div>
         </div>
       </RevealOnScroll>

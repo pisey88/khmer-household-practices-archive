@@ -1,21 +1,27 @@
 // components/archive/Hero.js
 
+"use client";
+
 import { collectionConfig } from "../../collection.config.js";
+import { useLanguage } from "../common/LanguageProvider.js";
 import RevealOnScroll from "../common/RevealOnScroll.js";
 
 export default function Hero() {
+  const { t } = useLanguage();
+
   return (
     <section className="hero">
       <RevealOnScroll>
-        <p className="label">Traditional Household Practices</p>
-        <h1>{collectionConfig.tagline}</h1>
-        <p className="hero-description">{collectionConfig.description}</p>
+        <p className="label">{t("heroBadge")}</p>
+        <h1>{t("heroTitle")}</h1>
+        <p className="hero-description">{t("heroSubtitle")}</p>
         <p className="label hero-meta">
-          {String(collectionConfig.entryCount).padStart(2, "0")} PRACTICES ·{" "}
-          {collectionConfig.province.toUpperCase()} · {collectionConfig.country.toUpperCase()}
+          {t("heroStatPractices", {
+            count: String(collectionConfig.entryCount).padStart(2, "0"),
+          })} · {t("heroStatProvince")} · {t("heroStatCountry")}
         </p>
         <a href="#archive" className="hero-cta">
-          Explore the Collection <span aria-hidden="true">↓</span>
+          {t("exploreCollection")}
         </a>
       </RevealOnScroll>
     </section>

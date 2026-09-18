@@ -561,6 +561,14 @@ a {
   border-bottom: 2px solid transparent;
 }
 
+:lang(km) .nav-link {
+  display: inline-block;
+  font-family: var(--font-khmer);
+  line-height: 1.7;
+  letter-spacing: 0;
+  padding-inline: 0.35rem;
+}
+
 .nav-link:hover {
   color: var(--color-terracotta);
 }

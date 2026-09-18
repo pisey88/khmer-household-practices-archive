@@ -1,8 +1,9 @@
-import { LanguageProvider } from "../components/common/LanguageProvider.js";
-import { Fraunces, Inter } from "next/font/google";
-import "./globals.css";
+"use client";
 
-// Serif for headings — editorial, museum-label feel.
+import { Fraunces, Inter, Noto_Sans_Khmer } from "next/font/google";
+import "./globals.css";
+import { LanguageProvider, useLanguage } from "../components/common/LanguageProvider.js";
+
 const fraunces = Fraunces({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
@@ -10,7 +11,6 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
-// Sans for body text, metadata, and navigation.
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500"],
@@ -18,18 +18,30 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata = {
-  title: "Khmer Household Archive",
-  description:
-    "A cultural archive documenting traditional household practices in Kampong Speu Province, Cambodia, before modern appliances became common.",
-};
+const notoSansKhmer = Noto_Sans_Khmer({
+  subsets: ["khmer"],
+  weight: ["400", "500", "600"],
+  variable: "--font-khmer",
+  display: "swap",
+});
+
+function RootContent({ children }) {
+  const { language } = useLanguage();
+
+  return (
+    <html
+      lang={language}
+      className={`${fraunces.variable} ${inter.variable} ${notoSansKhmer.variable}`}
+    >
+      <body>{children}</body>
+    </html>
+  );
+}
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
-      <body>
-        <LanguageProvider>{children}</LanguageProvider>
-      </body>
-    </html>
+    <LanguageProvider>
+      <RootContent>{children}</RootContent>
+    </LanguageProvider>
   );
 }

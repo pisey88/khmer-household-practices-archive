@@ -1,15 +1,16 @@
 // components/layout/Footer.js
 
-import { collectionConfig } from "../../collection.config.js";
+"use client";
+
+import { useLanguage } from "../common/LanguageProvider.js";
 
 export default function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="footer">
-      <p className="label">{collectionConfig.siteTitle}</p>
-      <p className="footer-note">
-        Preserving everyday household knowledge from {collectionConfig.province},{" "}
-        {collectionConfig.country}, one memory at a time.
-      </p>
+      <p className="label">{t("siteTitle")}</p>
+      <p className="footer-note">{t("footerTagline")}</p>
     </footer>
   );
 }
