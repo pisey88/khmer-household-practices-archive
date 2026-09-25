@@ -1,16 +1,4 @@
 -- Create the entries table for the Khmer Household Practices Archive
--- This table stores archival items with the following columns:
---   id: UUID (primary key, auto-generated)
---   created_at: TIMESTAMPTZ (timestamp with time zone, auto-generated)
---   owner: UUID (references auth.users, not null)
---   title: TEXT (required)
---   khmer_title: TEXT (optional)
---   category: TEXT (required)
---   province: TEXT (required)
---   description: TEXT (required)
---   photo_url: TEXT (optional)
---   contributor_name: TEXT (optional)
-
 CREATE TABLE public.entries (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -23,33 +11,31 @@ CREATE TABLE public.entries (
     photo_url TEXT,
     contributor_name TEXT
 );
--- Row Level Security policies
+
+-- Enable Row Level Security (RLS)
 ALTER TABLE public.entries ENABLE ROW LEVEL SECURITY;
 
--- Policy: anyone can read entries (public read)
+-- 1. Anyone can read entries
 CREATE POLICY "anyone can read entries"
-    ON public.entries
-    FOR SELECT USING (TRUE);
+  ON public.entries FOR SELECT 
+  USING (true);
 
--- Policy: owners can only insert their own entries
+-- 2. Owners add their own entries
 CREATE POLICY "owners add their own entries"
-    ON public.entries
-    FOR INSERT
-    USING (auth.uid() = owner);
+  ON public.entries FOR INSERT 
+  WITH CHECK (auth.uid() = owner);
 
--- Policy: owners can only update their own entries
+-- 3. Owners edit their own entries
 CREATE POLICY "owners edit their own entries"
-    ON public.entries
-    FOR UPDATE
-    USING (auth.uid() = owner);
+  ON public.entries FOR UPDATE 
+  USING (auth.uid() = owner);
 
--- Policy: owners can only delete their own entries
+-- 4. Owners delete their own entries
 CREATE POLICY "owners delete their own entries"
-    ON public.entries
-    FOR DELETE
-    USING (auth.uid() = owner);
+  ON public.entries FOR DELETE 
+  USING (auth.uid() = owner);
 
--- Indexes for common queries to keep database lookups fast
+-- Performance Indexes
 CREATE INDEX idx_entries_owner ON public.entries (owner);
 CREATE INDEX idx_entries_category ON public.entries (category);
 CREATE INDEX idx_entries_created_at ON public.entries (created_at);
