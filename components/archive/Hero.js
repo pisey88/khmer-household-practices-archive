@@ -21,7 +21,7 @@ export default function Hero() {
           })} · {t("heroStatProvince")} · {t("heroStatCountry")}
         </p>
         <a href="#archive" className="hero-cta">
-          {t("exploreCollection")}
+          {t("exploreCollection")} <span aria-hidden="true">↓</span>
         </a>
       </RevealOnScroll>
     </section>

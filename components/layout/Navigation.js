@@ -102,7 +102,9 @@ export default function Navigation() {
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || "A";
 
-  if (pathname === "/login" || pathname === "/signup") return null;
+  const isAuthRoute = pathname === "/login" || pathname === "/signup";
+
+  if (isAuthRoute) return null;
 
   return (
     <header className="nav">
