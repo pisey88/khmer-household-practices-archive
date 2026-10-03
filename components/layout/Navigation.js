@@ -47,10 +47,24 @@ export default function Navigation() {
   const [authError, setAuthError] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [activeAnchor, setActiveAnchor] = useState("");
   const profileRef = useRef(null);
+
+  useEffect(() => {
+    const syncActiveAnchor = () => {
+      setActiveAnchor(pathname === "/" ? window.location.hash : "");
+    };
+
+    syncActiveAnchor();
+    window.addEventListener("hashchange", syncActiveAnchor);
+    return () => window.removeEventListener("hashchange", syncActiveAnchor);
+  }, [pathname]);
+
   const handleHomeClick = (event) => {
     if (window.location.pathname === "/") {
       event.preventDefault();
+      setActiveAnchor("");
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
@@ -123,9 +137,38 @@ export default function Navigation() {
       </button>
       <div id="mobile-navigation" className={`nav-right ${navOpen ? "nav-right--open" : ""}`}>
         <nav className="nav-links">
-          <a href="/" className="nav-link nav-link--active" onClick={(event) => { handleHomeClick(event); setNavOpen(false); }}>{t("navHome")}</a>
-          <a href="#archive" className="nav-link" onClick={() => setNavOpen(false)}>{t("navArchive")}</a>
-          <a href="#about" className="nav-link" onClick={() => setNavOpen(false)}>{t("navAbout")}</a>
+          <a
+            href="/"
+            className={`nav-link ${pathname === "/" && !activeAnchor ? "nav-link--active" : ""}`}
+            aria-current={pathname === "/" && !activeAnchor ? "page" : undefined}
+            onClick={(event) => { handleHomeClick(event); setNavOpen(false); }}
+          >
+            {t("navHome")}
+          </a>
+          <a
+            href={pathname === "/" ? "#archive" : "/#archive"}
+            className={`nav-link ${pathname === "/" && activeAnchor === "#archive" ? "nav-link--active" : ""}`}
+            aria-current={pathname === "/" && activeAnchor === "#archive" ? "location" : undefined}
+            onClick={() => { setActiveAnchor("#archive"); setNavOpen(false); }}
+          >
+            {t("navArchive")}
+          </a>
+          <a
+            href={pathname === "/" ? "#about" : "/#about"}
+            className={`nav-link ${pathname === "/" && activeAnchor === "#about" ? "nav-link--active" : ""}`}
+            aria-current={pathname === "/" && activeAnchor === "#about" ? "location" : undefined}
+            onClick={() => { setActiveAnchor("#about"); setNavOpen(false); }}
+          >
+            {t("navAbout")}
+          </a>
+          <a
+            href="/contribute"
+            className={`nav-link ${pathname === "/contribute" ? "nav-link--active" : ""}`}
+            aria-current={pathname === "/contribute" ? "page" : undefined}
+            onClick={() => setNavOpen(false)}
+          >
+            CONTRIBUTE
+          </a>
           {authError ? (
             <span className="nav-auth-error">{t("navAuthUnavailable")}</span>
           ) : user ? (

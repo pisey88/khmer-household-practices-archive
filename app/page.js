@@ -57,7 +57,7 @@ export default function HomePage() {
               <a href="#archive" className="landing-button landing-button--primary">
                 Explore Collection <span aria-hidden="true">↓</span>
               </a>
-              <a href="/signup" className="landing-button landing-button--secondary">
+              <a href="/contribute" className="landing-button landing-button--secondary">
                 Submit a Practice <span aria-hidden="true">+</span>
               </a>
             </div>
@@ -120,7 +120,7 @@ export default function HomePage() {
             <h2 id="contributor-heading">Your household has a story worth keeping.</h2>
             <p>Help future generations understand the knowledge held in everyday things.</p>
           </div>
-          <a href="/signup" className="landing-button landing-button--primary contributor-cta__button">Become a contributor <span aria-hidden="true">→</span></a>
+          <a href="/contribute" className="landing-button landing-button--primary contributor-cta__button">Become a contributor <span aria-hidden="true">→</span></a>
         </section>
       </main>
       <footer className="landing-footer">

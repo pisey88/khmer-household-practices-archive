@@ -1,11 +1,9 @@
 // collection.config.js
 //
 // Site-wide / collection-level info — things that describe the archive as
-// a whole, not any single entry. Keeping this separate from entries.js
-// means the About section's stats stay in sync automatically instead of
-// being hand-typed numbers that can drift out of date.
-
-import { entries } from "./lib/entries.js";
+// a whole, not any single entry. The entry count is a hardcoded fallback
+// used when Supabase isn't configured or the live fetch fails; the real
+// count is fetched dynamically on the homepage.
 
 export const collectionConfig = {
   siteTitle: "Khmer Household Archive",
@@ -16,6 +14,7 @@ export const collectionConfig = {
   province: "Kampong Speu",
   country: "Cambodia",
 
-  // Derived, not hand-typed — always accurate even as entries are added.
-  entryCount: entries.length,
+  // Fallback count — overridden by live Supabase fetch on the homepage.
+  // Update this manually when the static entry count changes.
+  entryCount: 5,
 };

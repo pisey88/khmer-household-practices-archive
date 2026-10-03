@@ -1,57 +1,54 @@
 // components/archive/EntryCard.js
-//
-// Renders one entry. `reverse` flips image/text sides — ArchiveGrid sets
-// this by index so consecutive entries alternate direction.
+import React from 'react';
 
-"use client";
-
-import Image from "next/image";
-import RevealOnScroll from "../common/RevealOnScroll.js";
-import { useLanguage } from "../common/LanguageProvider.js";
-
-export default function EntryCard({ entry, reverse }) {
-  const { t, pick } = useLanguage();
-  const number = String(entry.id).padStart(2, "0");
-  const categoryKey = `category${entry.category.replace(/\s/g, "")}`;
+export default function EntryCard({ entry, reverse = false }) {
+  if (!entry) return null;
 
   return (
-    <RevealOnScroll>
-      <article className={`entry-card ${reverse ? "entry-card-reverse" : ""}`}>
+    <article className={`entry-card${reverse ? ' entry-card-reverse' : ''}${entry.photo_url ? '' : ' entry-card--no-image'}`}>
+      {entry.photo_url && (
         <div className="entry-image-wrap">
-          <Image
-            src={entry.image}
-            alt={pick(entry.title)}
-            fill
-            loading="eager"
-            sizes="(max-width: 640px) 100vw, 50vw"
+          <img
+            src={entry.photo_url}
+            alt={entry.title || entry.khmer_title || ''}
             className="entry-image"
           />
         </div>
+      )}
 
-        <div className="entry-content">
-          <p className="label entry-eyebrow">
-            {number} / {t(categoryKey)}
-          </p>
-          <h3>{pick(entry.title)}</h3>
-          <p className="entry-khmer">{pick(entry.khmerName)}</p>
-          <p className="entry-description">{pick(entry.description)}</p>
+      <div className="entry-content">
+        <div className="entry-card__body">
+          <p className="entry-eyebrow">{entry.category}</p>
+          <h3 className="entry-title">{entry.title || entry.khmer_title}</h3>
 
-          <dl className="entry-meta">
-            <div>
-              <dt className="label">{t("cardSource")}</dt>
-              <dd>{pick(entry.source)}</dd>
-            </div>
-            <div>
-              <dt className="label">{t("cardPlace")}</dt>
-              <dd>{pick(entry.place)}</dd>
-            </div>
-            <div>
-              <dt className="label">{t("cardMedia")}</dt>
-              <dd>{pick(entry.media)}</dd>
-            </div>
-          </dl>
+          {entry.khmer_title && entry.title !== entry.khmer_title && (
+            <p className="entry-khmer" lang="km">{entry.khmer_title}</p>
+          )}
+
+          {entry.description && (
+            <p className="entry-description">{entry.description}</p>
+          )}
         </div>
-      </article>
-    </RevealOnScroll>
+
+        <dl className="entry-meta">
+          <div className="entry-meta__item">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M20 21a8 8 0 0 0-16 0" />
+              <circle cx="12" cy="8" r="4" />
+            </svg>
+            <dt>Contributor:</dt>
+            <dd>{entry.contributor_name || 'Anonymous'}</dd>
+          </div>
+          <div className="entry-meta__item">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
+              <circle cx="12" cy="10" r="2.5" />
+            </svg>
+            <dt>Province:</dt>
+            <dd>{entry.province || 'N/A'}</dd>
+          </div>
+        </dl>
+      </div>
+    </article>
   );
 }

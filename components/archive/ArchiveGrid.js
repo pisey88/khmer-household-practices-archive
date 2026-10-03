@@ -137,10 +137,10 @@ export default function ArchiveGrid() {
 
       const haystack = [
         entry.title,
-        entry.khmerName,
+        entry.khmer_title,
         entry.description,
-        entry.source,
-        entry.place,
+        entry.contributor_name,
+        entry.province,
       ]
         .filter(Boolean)
         .map((field) => pick(field).normalize("NFC"))
