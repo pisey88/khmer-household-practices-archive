@@ -7,7 +7,7 @@ import ArchiveGrid from "../components/archive/ArchiveGrid.js";
 import { useLanguage } from "../components/common/LanguageProvider.js";
 
 export default function HomePage() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const [entryCount, setEntryCount] = useState(collectionConfig.entryCount);
   const [statsLoading, setStatsLoading] = useState(true);
 
@@ -47,66 +47,65 @@ export default function HomePage() {
         <section className="landing-hero">
           <div className="landing-hero__glow" aria-hidden="true" />
           <div className="landing-hero__content">
-            <p className="landing-badge">✦ KHMER HERITAGE ARCHIVE</p>
-            <h1>Preserving Household Wisdom Before the Electrical Era</h1>
+            <p className="landing-badge">✦ {t("homeBadge")}</p>
+            <h1>{t("homeTitle")}</h1>
             <p className="landing-hero__description">
-              {collectionConfig.description} We document the tools, techniques,
-              and memories that made everyday life possible.
+              {language === "km" ? t("homeDescription") : `${collectionConfig.description} ${t("homeDescription")}`}
             </p>
             <div className="landing-actions">
               <a href="#archive" className="landing-button landing-button--primary">
-                Explore Collection <span aria-hidden="true">↓</span>
+                {t("homeExploreCollection")} <span aria-hidden="true">↓</span>
               </a>
               <a href="/contribute" className="landing-button landing-button--secondary">
-                Submit a Practice <span aria-hidden="true">+</span>
+                {t("homeSubmitPractice")} <span aria-hidden="true">+</span>
               </a>
             </div>
           </div>
         </section>
 
-        <section className="landing-stats" aria-label="Archive statistics">
+        <section className="landing-stats" aria-label={t("homeArchiveStatsLabel")}>
           <div className="landing-stat">
             <span className="landing-stat__value">{String(displayCount).padStart(2, "0")}</span>
-            <span className="landing-stat__label">Practices Archived</span>
+            <span className="landing-stat__label">{t("homePracticesArchived")}</span>
           </div>
           <div className="landing-stat">
             <span className="landing-stat__value landing-stat__value--region">{collectionConfig.province}</span>
-            <span className="landing-stat__label">Primary Region</span>
+            <span className="landing-stat__label">{t("homePrimaryRegion")}</span>
           </div>
           <div className="landing-stat">
             <span className="landing-stat__value">100%</span>
-            <span className="landing-stat__label">Community Sourced</span>
+            <span className="landing-stat__label">{t("homeCommunitySourced")}</span>
           </div>
         </section>
 
         <section className="categories-section" aria-labelledby="categories-heading">
           <div className="section-heading">
-            <p className="label">Explore the collection</p>
-            <h2 id="categories-heading">Archive Categories</h2>
+            <p className="label">{t("homeExploreHeading")}</p>
+            <h2 id="categories-heading">{t("homeCategoriesHeading")}</h2>
           </div>
           <div className="categories-grid">
             <a href="#archive" className="category-card">
               <span className="category-card__number">01</span>
-              <h3>Food &amp; Cooking</h3>
-              <p>Clay stoves, bamboo steamers, palm sugar processing</p>
+              <h3>{t("homeCategoryFood")}</h3>
+              <p>{t("homeCategoryFoodDescription")}</p>
               <span className="category-card__arrow" aria-hidden="true">↗</span>
             </a>
             <a href="#archive" className="category-card">
               <span className="category-card__number">02</span>
-              <h3>Lighting &amp; Energy</h3>
-              <p>Resin torches, oil lamps, hearth upkeep</p>
+              <h3>{t("homeCategoryLighting")}</h3>
+              <p>{t("homeCategoryLightingDescription")}</p>
               <span className="category-card__arrow" aria-hidden="true">↗</span>
             </a>
             <a href="#archive" className="category-card">
               <span className="category-card__number">03</span>
-              <h3>Rice &amp; Agriculture</h3>
-              <p>Wooden mortars, grain storage, hand mills</p>
+              <h3>{t("homeCategoryRice")}</h3>
+              <p>{t("homeCategoryRiceDescription")}</p>
               <span className="category-card__arrow" aria-hidden="true">↗</span>
             </a>
             <a href="#archive" className="category-card">
               <span className="category-card__number">04</span>
-              <h3>Crafts &amp; Tools</h3>
-              <p>Rattan weaving, water jugs, bamboo traps</p>
+              <h3>{t("homeCategoryCrafts")}</h3>
+              <p>{t("homeCategoryCraftsDescription")}</p>
               <span className="category-card__arrow" aria-hidden="true">↗</span>
             </a>
           </div>
@@ -116,11 +115,11 @@ export default function HomePage() {
 
         <section className="contributor-cta" aria-labelledby="contributor-heading">
           <div>
-            <p className="label contributor-cta__label">Keep the record alive</p>
-            <h2 id="contributor-heading">Your household has a story worth keeping.</h2>
-            <p>Help future generations understand the knowledge held in everyday things.</p>
+            <p className="label contributor-cta__label">{t("homeCtaEyebrow")}</p>
+            <h2 id="contributor-heading">{t("homeCtaTitle")}</h2>
+            <p>{t("homeCtaDescription")}</p>
           </div>
-          <a href="/contribute" className="landing-button landing-button--primary contributor-cta__button">Become a contributor <span aria-hidden="true">→</span></a>
+          <a href="/contribute" className="landing-button landing-button--primary contributor-cta__button">{t("homeBecomeContributor")} <span aria-hidden="true">→</span></a>
         </section>
       </main>
       <footer className="landing-footer">
@@ -134,7 +133,7 @@ export default function HomePage() {
             <span className="landing-footer__status">🟢 {t("footerStatus")}</span>
           </div>
 
-          <nav className="landing-footer__column" aria-label="Explore">
+          <nav className="landing-footer__column" aria-label={t("homeExploreNavigationLabel")}>
             <p className="landing-footer__heading">{t("footerExplore")}</p>
             <a href="#top">{t("navHome")}</a>
             <a href="#archive">{t("footerArchiveCollection")}</a>
@@ -142,7 +141,7 @@ export default function HomePage() {
             <a href="#about">{t("navAbout")}</a>
           </nav>
 
-          <nav className="landing-footer__column" aria-label="Contribute">
+          <nav className="landing-footer__column" aria-label={t("homeContributeNavigationLabel")}>
             <p className="landing-footer__heading">{t("footerContribute")}</p>
             <a href="/signup">{t("footerSubmitPractice")}</a>
             <a href="#contributor-heading">{t("footerContributorGuide")}</a>
@@ -157,7 +156,7 @@ export default function HomePage() {
 
         <div className="landing-footer__bottom">
           <p>{t("footerCopyright")}</p>
-          <div className="landing-footer__badges" aria-label="Technology used">
+          <div className="landing-footer__badges" aria-label={t("homeTechnologyLabel")}>
             <span>{t("footerNextJs")}</span>
             <span>{t("footerSupabase")}</span>
           </div>

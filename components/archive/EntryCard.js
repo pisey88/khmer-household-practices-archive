@@ -1,16 +1,32 @@
-// components/archive/EntryCard.js
-import React from 'react';
+"use client";
+
+import { useLanguage } from "../common/LanguageProvider.js";
 
 export default function EntryCard({ entry, reverse = false }) {
   if (!entry) return null;
 
+  const { t } = useLanguage();
+  const photoUrl = entry?.photo_url;
+  const title = entry?.title || entry?.khmer_title || "";
+  const khmerTitle = entry?.khmer_title;
+  const category = entry?.category || "";
+  const categoryKey = `category${category.replace(/\s/g, "")}`;
+  const categoryLabel = t(categoryKey) === categoryKey ? category : t(categoryKey);
+  const description = entry?.description;
+  const contributorName = entry?.contributor_name;
+  const province = entry?.province;
+
   return (
-    <article className={`entry-card${reverse ? ' entry-card-reverse' : ''}${entry.photo_url ? '' : ' entry-card--no-image'}`}>
-      {entry.photo_url && (
+    <article
+      className={`entry-card${reverse ? " entry-card-reverse" : ""}${
+        photoUrl ? "" : " entry-card--no-image"
+      }`}
+    >
+      {photoUrl && (
         <div className="entry-image-wrap">
           <img
-            src={entry.photo_url}
-            alt={entry.title || entry.khmer_title || ''}
+            src={photoUrl}
+            alt={title}
             className="entry-image"
           />
         </div>
@@ -18,15 +34,17 @@ export default function EntryCard({ entry, reverse = false }) {
 
       <div className="entry-content">
         <div className="entry-card__body">
-          <p className="entry-eyebrow">{entry.category}</p>
-          <h3 className="entry-title">{entry.title || entry.khmer_title}</h3>
+          <p className="entry-eyebrow">{categoryLabel}</p>
+          <h3 className="entry-title">{title}</h3>
 
-          {entry.khmer_title && entry.title !== entry.khmer_title && (
-            <p className="entry-khmer" lang="km">{entry.khmer_title}</p>
+          {khmerTitle && title !== khmerTitle && (
+            <p className="entry-khmer" lang="km">
+              {khmerTitle}
+            </p>
           )}
 
-          {entry.description && (
-            <p className="entry-description">{entry.description}</p>
+          {description && (
+            <p className="entry-description">{description}</p>
           )}
         </div>
 
@@ -36,16 +54,16 @@ export default function EntryCard({ entry, reverse = false }) {
               <path d="M20 21a8 8 0 0 0-16 0" />
               <circle cx="12" cy="8" r="4" />
             </svg>
-            <dt>Contributor:</dt>
-            <dd>{entry.contributor_name || 'Anonymous'}</dd>
+            <dt>{t("cardContributor")}</dt>
+            <dd>{contributorName || t("cardAnonymous")}</dd>
           </div>
           <div className="entry-meta__item">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
               <circle cx="12" cy="10" r="2.5" />
             </svg>
-            <dt>Province:</dt>
-            <dd>{entry.province || 'N/A'}</dd>
+            <dt>{t("cardProvince")}</dt>
+            <dd>{province || t("cardNotAvailable")}</dd>
           </div>
         </dl>
       </div>

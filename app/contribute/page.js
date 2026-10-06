@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
+import { useLanguage } from '../../components/common/LanguageProvider.js';
 
 export default function ContributePage() {
   const router = useRouter();
+  const { t } = useLanguage();
 
   const [user, setUser] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -29,7 +31,7 @@ export default function ContributePage() {
         const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
         
         if (!url || !key) {
-          setErrorMsg('Supabase environment variables are missing in .env.local');
+          setErrorMsg('contributeAuthNotConfigured');
           return;
         }
 
@@ -53,7 +55,7 @@ export default function ContributePage() {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.size > 5 * 1024 * 1024) {
-        setErrorMsg('Image size must be less than 5 MB.');
+        setErrorMsg('contributeImageTooLarge');
         return;
       }
       setPhotoFile(file);
@@ -122,7 +124,7 @@ export default function ContributePage() {
       router.refresh();
     } catch (err) {
       console.error('Submission error:', err);
-      setErrorMsg(err.message || 'An error occurred while saving your entry.');
+      setErrorMsg(err.message || 'contributeSubmissionError');
     } finally {
       setSubmitting(false);
     }
@@ -132,32 +134,31 @@ export default function ContributePage() {
     <main className="contribute-page">
       <div className="contribute-page__inner">
         <header className="contribute-page__header">
-          <p className="contribute-page__eyebrow">Community collection</p>
-          <h1>Submit a Traditional Practice</h1>
+          <p className="contribute-page__eyebrow">{t('contributeEyebrow')}</p>
+          <h1>{t('contributeTitle')}</h1>
           <p className="contribute-page__description">
-            Document household tools, practices, and memories to help keep Khmer
-            household knowledge alive.
+            {t('contributeDescription')}
           </p>
         </header>
 
         <section className="contribute-card">
           <div className="contribute-card__header">
             <div>
-              <h2>Practice details</h2>
-              <p>Share what you know about the practice and the story behind it.</p>
+              <h2>{t('contributeDetailsHeading')}</h2>
+              <p>{t('contributeDetailsDescription')}</p>
             </div>
           </div>
 
           {errorMsg && (
             <div className="contribute-error" role="alert">
-              {errorMsg}
+              {t(errorMsg)}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="contribute-form" noValidate>
             <div className="contribute-form__grid">
                 <div className="contribute-field">
-                  <label htmlFor="title">Title (English)</label>
+                  <label htmlFor="title">{t('contributeTitleEnglish')}</label>
                   <input
                     id="title"
                     type="text"
@@ -166,12 +167,12 @@ export default function ContributePage() {
                     onChange={handleChange}
                     required
                     maxLength={150}
-                    placeholder="e.g., Clay Kerosene Lamp"
+                    placeholder={t('contributePlaceholderTitle')}
                   />
                 </div>
 
                 <div className="contribute-field">
-                  <label htmlFor="khmer_title">Title (Khmer)</label>
+                  <label htmlFor="khmer_title">{t('contributeTitleKhmer')}</label>
                   <input
                     id="khmer_title"
                     type="text"
@@ -179,27 +180,27 @@ export default function ContributePage() {
                     value={formData.khmer_title}
                     onChange={handleChange}
                     maxLength={150}
-                    placeholder="e.g., ចង្កៀងប្រេងកាត"
+                    placeholder={t('contributePlaceholderKhmerTitle')}
                   />
                 </div>
 
                 <div className="contribute-field">
-                  <label htmlFor="category">Category</label>
+                  <label htmlFor="category">{t('contributeCategory')}</label>
                   <select
                     id="category"
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
                   >
-                    <option value="Cooking">Cooking</option>
-                    <option value="Lighting">Lighting</option>
-                    <option value="Agriculture">Agriculture</option>
-                    <option value="Crafts">Crafts</option>
+                    <option value="Cooking">{t('contributeCategoryCooking')}</option>
+                    <option value="Lighting">{t('contributeCategoryLighting')}</option>
+                    <option value="Agriculture">{t('contributeCategoryAgriculture')}</option>
+                    <option value="Crafts">{t('contributeCategoryCrafts')}</option>
                   </select>
                 </div>
 
                 <div className="contribute-field">
-                  <label htmlFor="province">Province</label>
+                  <label htmlFor="province">{t('contributeProvince')}</label>
                   <input
                     id="province"
                     type="text"
@@ -207,24 +208,24 @@ export default function ContributePage() {
                     value={formData.province}
                     onChange={handleChange}
                     required
-                    placeholder="e.g., Kampong Speu"
+                    placeholder={t('contributePlaceholderProvince')}
                   />
                 </div>
 
                 <div className="contribute-field contribute-field--wide">
-                  <label htmlFor="contributor_name">Contributor Name</label>
+                  <label htmlFor="contributor_name">{t('contributeName')}</label>
                   <input
                     id="contributor_name"
                     type="text"
                     name="contributor_name"
                     value={formData.contributor_name}
                     onChange={handleChange}
-                    placeholder="Your name or relative's name"
+                    placeholder={t('contributePlaceholderName')}
                   />
                 </div>
 
                 <div className="contribute-field contribute-field--wide">
-                  <label htmlFor="description">Description / Story</label>
+                  <label htmlFor="description">{t('contributeDescriptionLabel')}</label>
                   <textarea
                     id="description"
                     name="description"
@@ -234,12 +235,12 @@ export default function ContributePage() {
                     required
                     minLength={10}
                     maxLength={2000}
-                    placeholder="Describe how it was used..."
+                    placeholder={t('contributePlaceholderDescription')}
                   />
                 </div>
 
                 <div className="contribute-field contribute-field--wide">
-                  <label htmlFor="photo">Photo Upload</label>
+                  <label htmlFor="photo">{t('contributePhoto')}</label>
                   <input
                     id="photo"
                     type="file"
@@ -248,7 +249,7 @@ export default function ContributePage() {
                     required
                   />
                   <span className="contribute-field__hint">
-                    JPEG, PNG, or WebP. Maximum file size: 5 MB.
+                    {t('contributePhotoHint')}
                   </span>
                 </div>
             </div>
@@ -258,7 +259,7 @@ export default function ContributePage() {
               disabled={submitting}
               className="contribute-submit"
             >
-              {submitting ? 'Submitting...' : 'Submit Entry'}
+              {submitting ? t('contributeSubmitting') : t('contributeSubmit')}
               <span aria-hidden="true">→</span>
             </button>
           </form>
@@ -281,22 +282,21 @@ export default function ContributePage() {
             <button
               type="button"
               className="contribute-modal__close"
-              aria-label="Close sign-in dialog"
+              aria-label={t('contributeCloseDialog')}
               onClick={() => setShowAuthModal(false)}
             >
               ×
             </button>
-            <p className="contribute-page__eyebrow">One more step</p>
-            <h2 id="contribute-modal-title">Sign in to contribute</h2>
+            <p className="contribute-page__eyebrow">{t('contributeOneMoreStep')}</p>
+            <h2 id="contribute-modal-title">{t('contributeSignInHeading')}</h2>
             <p>
-              Your story is ready. Sign in or create an account to submit it to
-              the archive.
+              {t('contributeSignInMessage')}
             </p>
             <a
               href="/login"
               className="landing-button landing-button--primary contribute-modal__action"
             >
-              Sign In / Sign Up
+              {t('contributeSignInAction')}
             </a>
           </section>
         </div>

@@ -22,7 +22,7 @@ export default function LoginPage() {
 
     if (!supabase) {
       setLoading(false);
-      setError("Authentication is not configured for this environment.");
+      setError(t("contributeAuthNotConfigured"));
       return;
     }
 
@@ -34,7 +34,7 @@ export default function LoginPage() {
     setLoading(false);
 
     if (error) {
-      setError("Invalid email or password");
+      setError(t("authInvalidCredentials"));
     } else {
       router.push("/");
     }
@@ -126,11 +126,11 @@ export default function LoginPage() {
         <a href="/" style={{ color: "#b8935a", display: "inline-block", marginBottom: "1.5rem", textDecoration: "none" }}>
           {t("authBackHome")}
         </a>
-        <h1 style={titleStyle}>Log In</h1>
+        <h1 style={titleStyle}>{t("authLoginTitle")}</h1>
 
         <div style={inputGroupStyle}>
           <label htmlFor="email" style={labelStyle}>
-            Email
+            {t("authEmail")}
           </label>
           <input
             id="email"
@@ -139,13 +139,13 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
             style={inputStyle}
-            placeholder="your.email@example.com"
+            placeholder={t("authEmailPlaceholder")}
           />
         </div>
 
         <div style={inputGroupStyle}>
           <label htmlFor="password" style={labelStyle}>
-            Password
+            {t("authPassword")}
           </label>
           <input
             id="password"
@@ -154,7 +154,7 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
             style={inputStyle}
-            placeholder="Enter your password"
+            placeholder={t("authLoginPasswordPlaceholder")}
           />
         </div>
 
@@ -163,14 +163,14 @@ export default function LoginPage() {
           disabled={loading}
           style={buttonStyle}
         >
-          {loading ? "Logging in..." : "Log In"}
+          {loading ? t("authLoginLoading") : t("authLoginTitle")}
         </button>
 
         {error && <p style={errorStyle}>{error}</p>}
 
         <p style={{ marginTop: "1.5rem", textAlign: "center", fontSize: "0.9rem" }}>
-          Don't have an account?{' '}
-          <a href="/signup" style={linkStyle}>Sign up</a>
+          {t("authSignupPrompt")}{' '}
+          <a href="/signup" style={linkStyle}>{t("authSignupLink")}</a>
         </p>
       </form>
     </div>

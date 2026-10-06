@@ -22,7 +22,7 @@ export default function SignUpPage() {
 
     if (!supabase) {
       setLoading(false);
-      setError("Authentication is not configured for this environment.");
+      setError(t("contributeAuthNotConfigured"));
       return;
     }
 
@@ -126,11 +126,11 @@ export default function SignUpPage() {
         <a href="/" style={{ color: "#b8935a", display: "inline-block", marginBottom: "1.5rem", textDecoration: "none" }}>
           {t("authBackHome")}
         </a>
-        <h1 style={titleStyle}>Sign Up</h1>
+        <h1 style={titleStyle}>{t("authSignupTitle")}</h1>
 
         <div style={inputGroupStyle}>
           <label htmlFor="email" style={labelStyle}>
-            Email
+            {t("authEmail")}
           </label>
           <input
             id="email"
@@ -139,13 +139,13 @@ export default function SignUpPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
             style={inputStyle}
-            placeholder="your.email@example.com"
+            placeholder={t("authEmailPlaceholder")}
           />
         </div>
 
         <div style={inputGroupStyle}>
           <label htmlFor="password" style={labelStyle}>
-            Password
+            {t("authPassword")}
           </label>
           <input
             id="password"
@@ -154,7 +154,7 @@ export default function SignUpPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
             style={inputStyle}
-            placeholder="Enter a secure password"
+            placeholder={t("authSignupPasswordPlaceholder")}
           />
         </div>
 
@@ -163,14 +163,14 @@ export default function SignUpPage() {
           disabled={loading}
           style={buttonStyle}
         >
-          {loading ? "Creating account..." : "Sign Up"}
+          {loading ? t("authSignupLoading") : t("authSignupTitle")}
         </button>
 
         {error && <p style={errorStyle}>{error}</p>}
 
         <p style={{ marginTop: "1.5rem", textAlign: "center", fontSize: "0.9rem" }}>
-          Already have an account?{' '}
-          <a href="/login" style={linkStyle}>Log in</a>
+          {t("authLoginPrompt")}{' '}
+          <a href="/login" style={linkStyle}>{t("authLoginLink")}</a>
         </p>
       </form>
     </div>

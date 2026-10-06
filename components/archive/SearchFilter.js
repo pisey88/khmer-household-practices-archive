@@ -59,19 +59,24 @@ export default function SearchFilter({
         >
           {t("categoryAll")} <span className="search-filter__chip-count">({totalCount})</span>
         </button>
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            type="button"
-            className={
-              "search-filter__chip" +
-              (activeCategory === cat ? " search-filter__chip--active" : "")
-            }
-            onClick={() => onCategoryChange(cat)}
-          >
-            {t(`category${cat.replace(/\s/g, "")}`)} <span className="search-filter__chip-count">({categoryCounts[cat] ?? 0})</span>
-          </button>
-        ))}
+        {categories.map((cat) => {
+          const key = `category${cat.replace(/\s/g, "")}`;
+          const translation = t(key);
+          return (
+            <button
+              key={cat}
+              type="button"
+              className={
+                "search-filter__chip" +
+                (activeCategory === cat ? " search-filter__chip--active" : "")
+              }
+              onClick={() => onCategoryChange(cat)}
+            >
+              {translation === key ? cat : translation}{" "}
+              <span className="search-filter__chip-count">({categoryCounts[cat] ?? 0})</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* aria-live so screen reader users hear the result count update as

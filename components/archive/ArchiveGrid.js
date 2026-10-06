@@ -51,14 +51,14 @@ export default function ArchiveGrid() {
       setError(null);
 
       if (!isSupabaseConfigured()) {
-        setError("Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in .env.local");
+        setError("archiveSupabaseNotConfigured");
         setLoading(false);
         return;
       }
 
       const supabase = createClient();
       if (!supabase) {
-        setError("Failed to create Supabase client.");
+        setError("archiveClientError");
         setLoading(false);
         return;
       }
@@ -109,15 +109,23 @@ export default function ArchiveGrid() {
   }, [debouncedQuery, activeCategory, hydrated]);
 
   const categories = useMemo(() => {
-    const unique = new Set(entries.map((e) => e.category));
+    if (!entries || !Array.isArray(entries)) return [];
+    const unique = new Set(
+      entries
+        .filter((e) => e && e.category)
+        .map((e) => e.category)
+    );
     return Array.from(unique).sort();
   }, [entries]);
 
   const categoryCounts = useMemo(() => {
-    return entries.reduce((counts, entry) => {
-      counts[entry.category] = (counts[entry.category] ?? 0) + 1;
-      return counts;
-    }, {});
+    if (!entries || !Array.isArray(entries)) return {};
+    return entries
+      .filter((entry) => entry && entry.category)
+      .reduce((counts, entry) => {
+        counts[entry.category] = (counts[entry.category] ?? 0) + 1;
+        return counts;
+      }, {});
   }, [entries]);
 
   const filteredEntries = useMemo(() => {
@@ -156,7 +164,7 @@ export default function ArchiveGrid() {
     return (
       <section id="archive" className="archive-grid">
         <p className="archive-grid__empty" style={{ textAlign: "center", padding: "3rem 0" }}>
-          Loading entries…
+          {t("archiveLoading")}
         </p>
       </section>
     );
@@ -167,7 +175,7 @@ export default function ArchiveGrid() {
     return (
       <section id="archive" className="archive-grid">
         <p className="archive-grid__empty" style={{ textAlign: "center", padding: "3rem 0", color: "#b91c1c" }}>
-          {error}
+          {t(error)}
         </p>
       </section>
     );

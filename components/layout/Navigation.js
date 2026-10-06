@@ -167,7 +167,7 @@ export default function Navigation() {
             aria-current={pathname === "/contribute" ? "page" : undefined}
             onClick={() => setNavOpen(false)}
           >
-            CONTRIBUTE
+            {t("navContribute")}
           </a>
           {authError ? (
             <span className="nav-auth-error">{t("navAuthUnavailable")}</span>
