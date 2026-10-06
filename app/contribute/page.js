@@ -192,10 +192,14 @@ export default function ContributePage() {
                     value={formData.category}
                     onChange={handleChange}
                   >
-                    <option value="Cooking">{t('contributeCategoryCooking')}</option>
-                    <option value="Lighting">{t('contributeCategoryLighting')}</option>
-                    <option value="Agriculture">{t('contributeCategoryAgriculture')}</option>
-                    <option value="Crafts">{t('contributeCategoryCrafts')}</option>
+                    <option value="Cooking">Cooking</option>
+                    <option value="Lighting">Lighting</option>
+                    <option value="Food Preparation">Food Preparation</option>
+                    <option value="Rice Processing">Rice Processing</option>
+                    <option value="Clothing Care">Clothing Care</option>
+                    <option value="Water Management">Water Management</option>
+                    <option value="Household Crafts">Household Crafts</option>
+                    <option value="Crafts">Crafts</option>
                   </select>
                 </div>
 
