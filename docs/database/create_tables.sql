@@ -9,8 +9,13 @@ CREATE TABLE public.entries (
     province TEXT NOT NULL,
     description TEXT NOT NULL,
     photo_url TEXT,
-    contributor_name TEXT
+    contributor_name TEXT,
+    contributor_name_km TEXT
 );
+
+-- Add the nullable field to entries tables created before bilingual names were supported.
+ALTER TABLE public.entries
+  ADD COLUMN IF NOT EXISTS contributor_name_km TEXT;
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.entries ENABLE ROW LEVEL SECURITY;

@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import { useLanguage } from '../../components/common/LanguageProvider.js';
+import { CAMBODIAN_PROVINCES } from '../../lib/provinces.js';
+import { CATEGORIES } from '../../lib/constants.js';
 
 export default function ContributePage() {
   const router = useRouter();
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
 
   const [user, setUser] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -21,6 +23,7 @@ export default function ContributePage() {
     description: '',
     province: 'Kampong Speu',
     contributor_name: '',
+    contributor_name_km: '',
   });
   const [photoFile, setPhotoFile] = useState(null);
 
@@ -110,9 +113,10 @@ export default function ContributePage() {
           title: formData.title.trim(),
           khmer_title: formData.khmer_title.trim(),
           category: formData.category,
-          province: formData.province.trim(),
+          province: formData.province,
           description: formData.description.trim(),
           contributor_name: formData.contributor_name.trim(),
+          contributor_name_km: formData.contributor_name_km.trim(),
           photo_url,
           owner: activeUser.id,
         },
@@ -192,39 +196,60 @@ export default function ContributePage() {
                     value={formData.category}
                     onChange={handleChange}
                   >
-                    <option value="Cooking">Cooking</option>
-                    <option value="Lighting">Lighting</option>
-                    <option value="Food Preparation">Food Preparation</option>
-                    <option value="Rice Processing">Rice Processing</option>
-                    <option value="Clothing Care">Clothing Care</option>
-                    <option value="Water Management">Water Management</option>
-                    <option value="Household Crafts">Household Crafts</option>
-                    <option value="Crafts">Crafts</option>
+                    {CATEGORIES.map((category) => {
+                      const key = `category${category.replace(/\s/g, '')}`;
+                      const translation = t(key);
+
+                      return (
+                        <option key={category} value={category}>
+                          {translation === key ? category : translation}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
 
                 <div className="contribute-field">
                   <label htmlFor="province">{t('contributeProvince')}</label>
-                  <input
+                  <select
                     id="province"
-                    type="text"
                     name="province"
                     value={formData.province}
                     onChange={handleChange}
                     required
-                    placeholder={t('contributePlaceholderProvince')}
-                  />
+                  >
+                    {CAMBODIAN_PROVINCES.map((province) => (
+                      <option key={province.en} value={province.en}>
+                        {language === 'km' ? province.km : province.en}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
-                <div className="contribute-field contribute-field--wide">
-                  <label htmlFor="contributor_name">{t('contributeName')}</label>
+                <div className="contribute-field">
+                  <label htmlFor="contributor_name">{t('contributeNameEnglish')}</label>
                   <input
                     id="contributor_name"
                     type="text"
                     name="contributor_name"
                     value={formData.contributor_name}
                     onChange={handleChange}
-                    placeholder={t('contributePlaceholderName')}
+                    maxLength={150}
+                    placeholder={t('contributePlaceholderNameEnglish')}
+                  />
+                </div>
+
+                <div className="contribute-field">
+                  <label htmlFor="contributor_name_km">{t('contributeNameKhmer')}</label>
+                  <input
+                    id="contributor_name_km"
+                    type="text"
+                    name="contributor_name_km"
+                    lang="km"
+                    value={formData.contributor_name_km}
+                    onChange={handleChange}
+                    maxLength={150}
+                    placeholder={t('contributePlaceholderNameKhmer')}
                   />
                 </div>
 

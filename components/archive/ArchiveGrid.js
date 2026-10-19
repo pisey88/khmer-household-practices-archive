@@ -15,6 +15,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient, isSupabaseConfigured } from "../../lib/supabase/client.js";
+import { CATEGORIES } from "../../lib/constants.js";
 import { useDebouncedValue } from "../../lib/useDebouncedValue.js";
 import { useLanguage } from "../common/LanguageProvider.js";
 import EntryCard from "./EntryCard";
@@ -108,16 +109,6 @@ export default function ArchiveGrid() {
     window.history.replaceState(null, "", url + window.location.hash);
   }, [debouncedQuery, activeCategory, hydrated]);
 
-  const categories = useMemo(() => {
-    if (!entries || !Array.isArray(entries)) return [];
-    const unique = new Set(
-      entries
-        .filter((e) => e && e.category)
-        .map((e) => e.category)
-    );
-    return Array.from(unique).sort();
-  }, [entries]);
-
   const categoryCounts = useMemo(() => {
     if (!entries || !Array.isArray(entries)) return {};
     return entries
@@ -148,6 +139,7 @@ export default function ArchiveGrid() {
         entry.khmer_title,
         entry.description,
         entry.contributor_name,
+        entry.contributor_name_km,
         entry.province,
       ]
         .filter(Boolean)
@@ -184,7 +176,7 @@ export default function ArchiveGrid() {
   return (
     <section id="archive" className="archive-grid">
       <SearchFilter
-        categories={categories}
+        categories={CATEGORIES}
         categoryCounts={categoryCounts}
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
@@ -201,7 +193,23 @@ export default function ArchiveGrid() {
       ) : (
         <div className="archive-grid__grid">
           {filteredEntries.map((entry, index) => (
-            <EntryCard key={entry.id} entry={entry} reverse={index % 2 === 1} />
+            <EntryCard
+              key={entry.id}
+              entry={entry}
+              reverse={index % 2 === 1}
+              onEntryDeleted={(deletedId) =>
+                setEntries((currentEntries) =>
+                  currentEntries.filter((item) => item.id !== deletedId)
+                )
+              }
+              onEntryUpdated={(updatedEntry) =>
+                setEntries((currentEntries) =>
+                  currentEntries.map((item) =>
+                    item.id === updatedEntry.id ? updatedEntry : item
+                  )
+                )
+              }
+            />
           ))}
         </div>
       )}

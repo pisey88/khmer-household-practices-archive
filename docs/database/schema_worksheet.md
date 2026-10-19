@@ -43,5 +43,6 @@ While the core `entries` table contains `id`, `created_at`, and `owner`, the arc
 - `province` (text, required) – geographic region within Cambodia.
 - `photo_url` (text, optional) – link to an associated image.
 - `contributor_name` (text, optional) – full name of the contributor.
+- `contributor_name_km` (text, optional) – contributor name written in Khmer.
 
 These optional columns can be added incrementally in subsequent sprints without affecting the existing three‑column foundation.
