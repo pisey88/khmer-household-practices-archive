@@ -67,6 +67,7 @@ export default function ArchiveGrid() {
       const { data, error: fetchError } = await supabase
         .from("entries")
         .select("*")
+        .eq("status", "published")
         .order("id", { ascending: false });
 
       if (cancelled) return;

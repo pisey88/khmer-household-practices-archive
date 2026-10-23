@@ -187,6 +187,9 @@ export default function Navigation() {
               {profileOpen && (
                 <div className="nav-profile-menu" role="menu">
                   <p className="nav-profile-email">{user.email}</p>
+                  <a href="/my-entries" className="nav-profile-entry" role="menuitem">
+                    {t("navMyEntries")}
+                  </a>
                   <div className="nav-profile-divider" />
                   <button type="button" className="nav-profile-logout" onClick={handleLogout} role="menuitem">
                     {t("navLogout")}

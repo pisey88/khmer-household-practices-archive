@@ -13,6 +13,7 @@ export default function ContributePage() {
 
   const [user, setUser] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -124,8 +125,7 @@ export default function ContributePage() {
 
       if (insertError) throw insertError;
 
-      router.push('/');
-      router.refresh();
+      setSubmitted(true);
     } catch (err) {
       console.error('Submission error:', err);
       setErrorMsg(err.message || 'contributeSubmissionError');
@@ -145,7 +145,25 @@ export default function ContributePage() {
           </p>
         </header>
 
-        <section className="contribute-card">
+        {submitted ? (
+          <section className="contribute-card contribute-card--success">
+            <div className="contribute-card__header">
+              <div>
+                <h2>{t('contributeSuccessHeading')}</h2>
+              </div>
+            </div>
+            <p className="contribute-success__message">{t('contributeSuccessMessage')}</p>
+            <div className="contribute-success__actions">
+              <a href="/my-entries" className="landing-button landing-button--primary">
+                {t('contributeSuccessAction')} <span aria-hidden="true">&rarr;</span>
+              </a>
+              <a href="/" className="landing-button landing-button--secondary">
+                {t('navHome')}
+              </a>
+            </div>
+          </section>
+        ) : (
+          <section className="contribute-card">
           <div className="contribute-card__header">
             <div>
               <h2>{t('contributeDetailsHeading')}</h2>
@@ -293,6 +311,7 @@ export default function ContributePage() {
             </button>
           </form>
         </section>
+        )}
       </div>
 
       {showAuthModal && (

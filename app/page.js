@@ -28,7 +28,8 @@ export default function HomePage() {
 
       const { count, error } = await supabase
         .from("entries")
-        .select("*", { count: "exact", head: true });
+        .select("*", { count: "exact", head: true })
+        .eq("status", "published");
 
       if (!error && count !== null) {
         setEntryCount(count);

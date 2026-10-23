@@ -127,14 +127,32 @@ export default function EntryCard({
     }
 
     setIsSaving(true);
+
+    // Check if the current user is a reviewer; if not, reset status back to
+    // pending so a curator must re-approve the updated content.
+    let isReviewer = false;
+    try {
+      const { data: reviewerData, error: reviewerError } = await supabase
+        .rpc("is_reviewer");
+      isReviewer = !reviewerError && reviewerData === true;
+    } catch {
+      // RPC not available — safely default to non-reviewer.
+    }
+
+    const updatePayload = {
+      title: draft.title,
+      khmer_title: draft.khmer_title,
+      description: draft.description,
+      category: draft.category,
+    };
+
+    if (!isReviewer) {
+      updatePayload.status = "pending";
+    }
+
     const { data, error } = await supabase
       .from("entries")
-      .update({
-        title: draft.title,
-        khmer_title: draft.khmer_title,
-        description: draft.description,
-        category: draft.category,
-      })
+      .update(updatePayload)
       .eq("id", entry.id)
       .select();
     setIsSaving(false);
