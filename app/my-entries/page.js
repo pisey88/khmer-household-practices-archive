@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient, isSupabaseConfigured } from "../../lib/supabase/client.js";
 import { useLanguage } from "../../components/common/LanguageProvider.js";
 import { CAMBODIAN_PROVINCES } from "../../lib/provinces.js";
+import { TRANSLATIONS } from "../../lib/i18n.js";
 
 const STATUS_STYLES = {
   pending: {
@@ -20,9 +21,11 @@ const STATUS_STYLES = {
   },
 };
 
-function statusLabel(status, t) {
+function bilingualStatusLabel(status) {
   const key = `status${status.charAt(0).toUpperCase()}${status.slice(1)}`;
-  return t(key);
+  const en = TRANSLATIONS.en[key] || status;
+  const km = TRANSLATIONS.km[key] || status;
+  return `${en} / ${km}`;
 }
 
 export default function MyEntriesPage() {
@@ -129,7 +132,7 @@ export default function MyEntriesPage() {
                                 background: st.background,
                               }}
                             >
-                              {statusLabel(status, t)}
+                              {bilingualStatusLabel(status)}
                             </span>
                           </dd>
                         </div>
