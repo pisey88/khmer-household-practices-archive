@@ -154,10 +154,10 @@ export default function Navigation() {
             {t("navArchive")}
           </a>
           <a
-            href={pathname === "/" ? "#about" : "/#about"}
-            className={`nav-link ${pathname === "/" && activeAnchor === "#about" ? "nav-link--active" : ""}`}
-            aria-current={pathname === "/" && activeAnchor === "#about" ? "location" : undefined}
-            onClick={() => { setActiveAnchor("#about"); setNavOpen(false); }}
+            href="/about"
+            className={`nav-link ${pathname === "/about" ? "nav-link--active" : ""}`}
+            aria-current={pathname === "/about" ? "page" : undefined}
+            onClick={() => setNavOpen(false)}
           >
             {t("navAbout")}
           </a>

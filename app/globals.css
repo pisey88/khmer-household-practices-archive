@@ -321,6 +321,285 @@ a {
   }
 }
 
+.objectives {
+  margin-top: var(--space-md);
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.objectives li {
+  position: relative;
+  padding-left: 1.25rem;
+  margin-bottom: var(--space-xs);
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.objectives li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--color-terracotta);
+}
+
+.methodology-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-md);
+  font-size: 0.95rem;
+}
+
+.methodology-table th,
+.methodology-table td {
+  text-align: left;
+  padding: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.methodology-table th {
+  color: var(--color-charcoal);
+  font-weight: 500;
+}
+
+.methodology-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* --------------------------------------------------------------------------
+   8b. About Page UI Components  —  Enhanced layout
+   -------------------------------------------------------------------------- */
+
+/* -- Hero header with extra top padding for the floating nav -- */
+.about__hero-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 7rem;          /* pt-28 equivalent: keep heading clear of fixed nav */
+}
+
+.about__hero-heading {
+  margin: 0;
+  font-family: var(--font-serif);
+  color: var(--color-charcoal);
+  font-size: var(--font-size-h2);
+}
+
+.about__badge {
+  display: inline-block;
+  padding: 0.35rem 1rem;
+  background: rgba(200, 98, 67, 0.18);
+  border: 1px solid rgba(200, 98, 67, 0.5);
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #c86243;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+/* -- Glassmorphism mission card -- */
+.about__mission-glass {
+  background: rgba(18, 15, 14, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;         /* rounded-2xl ≈ 16px */
+  padding: 1.5rem;             /* p-6 */
+  margin-top: 2rem;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  transition: box-shadow var(--transition-fast);
+}
+
+.about__mission-glass:hover {
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+}
+
+/* -- 2×2 visual-grid for the four objectives -- */
+.about__objectives-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.about__objective-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(200, 98, 67, 0.3);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  background: rgba(18, 15, 14, 0.5);
+  transition: border-color var(--transition-fast),
+              transform var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+.about__objective-card:hover {
+  border-color: #c86243;
+  transform: translateY(-5px);
+  box-shadow: 0 0 24px rgba(200, 98, 67, 0.15);
+}
+
+.about__objective-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.75rem;
+  border-radius: 9999px;
+  background: rgba(200, 98, 67, 0.2);
+  color: #c86243;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* -- Feature callout (Kampong Speu tradition) with gold left border -- */
+.about__callout-feature {
+  border-left: 4px solid #b8935a;               /* border-l-4 border-amber-600 */
+  background: rgba(184, 147, 90, 0.2);          /* bg-amber-950/20 */
+  border-top-right-radius: 1rem;                 /* rounded-r-xl */
+  border-bottom-right-radius: 1rem;
+  padding: 1.25rem;                              /* p-5 */
+  margin: 2rem 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.about__callout-feature p {
+  font-family: var(--font-serif);
+  line-height: 1.6;
+  color: var(--color-charcoal);
+}
+
+/* -- Methodology section header -- */
+.about__methodology-header {
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+}
+
+/* -- Clean, scannable methodology definition grid (table) -- */
+.about__methodology-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.about__methodology-table thead {
+  background: rgba(18, 15, 14, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.about__methodology-table th,
+.about__methodology-table td {
+  text-align: left;
+  padding: 0.85rem 1.15rem;
+  border-bottom: 1px solid rgba(168, 160, 154, 0.15);  /* subtle border-stone-800 */
+  color: var(--color-text-muted);
+}
+
+.about__methodology-table th {
+  color: var(--color-charcoal);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.about__methodology-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.about__methodology-table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.about__methodology-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* -- Full-width CTA card -- */
+.about__cta-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2.5rem;
+  margin: 2.5rem auto;
+  max-width: 100%;
+  background: radial-gradient(
+    circle at 0% 0%,
+    rgba(200, 98, 67, 0.15) 0%,
+    rgba(26, 21, 18, 0.85) 75%
+  );
+  border: 1px solid rgba(200, 98, 67, 0.3);
+  border-radius: 1.25rem;
+  text-align: center;
+}
+
+.about__cta-card p {
+  max-width: 36rem;
+  color: var(--color-charcoal);
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.about__cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.9rem 2.2rem;
+  border: none;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #c86243, #9e432a);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--transition-fast),
+              box-shadow var(--transition-fast),
+              border-color var(--transition-fast);
+  box-shadow: 0 8px 22px rgba(200, 98, 67, 0.22);
+}
+
+.about__cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 28px rgba(200, 98, 67, 0.5);
+}
+
+.about__cta-button .arrow {
+  display: inline-block;
+  transition: transform var(--transition-fast);
+}
+
+.about__cta-button:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* -- Section spacing utility -- */
+.about__spacer {
+  height: 0.5rem;
+}
+
 /* --------------------------------------------------------------------------
    9. Search & Filter Controls
    -------------------------------------------------------------------------- */

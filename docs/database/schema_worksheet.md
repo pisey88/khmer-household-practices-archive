@@ -46,3 +46,9 @@ While the core `entries` table contains `id`, `created_at`, and `owner`, the arc
 - `contributor_name_km` (text, optional) – contributor name written in Khmer.
 
 These optional columns can be added incrementally in subsequent sprints without affecting the existing three‑column foundation.
+
+## Applying the Khmer contributor name migration
+
+For an existing Supabase project, run [`add_contributor_name_km.sql`](./add_contributor_name_km.sql)
+in the Supabase Dashboard SQL Editor. The migration is safe to rerun and refreshes
+the API schema cache so the contribution form can insert `contributor_name_km`.

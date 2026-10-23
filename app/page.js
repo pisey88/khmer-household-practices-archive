@@ -138,7 +138,7 @@ export default function HomePage() {
             <a href="#top">{t("navHome")}</a>
             <a href="#archive">{t("footerArchiveCollection")}</a>
             <a href="#categories-heading">{t("footerCategories")}</a>
-            <a href="#about">{t("navAbout")}</a>
+            <a href="/about">{t("navAbout")}</a>
           </nav>
 
           <nav className="landing-footer__column" aria-label={t("homeContributeNavigationLabel")}>
