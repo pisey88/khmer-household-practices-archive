@@ -190,9 +190,9 @@ export default function EntryCard({
         <div className="entry-card__body">
           <p className="entry-eyebrow">{categoryLabel}</p>
           {isEditing ? (
-            <form onSubmit={handleSave} style={{ display: "grid", gap: "0.6rem" }}>
-              <label>
-                Title
+            <form onSubmit={handleSave} className="entry-edit-form">
+              <label className="entry-edit-field">
+                <span>Title</span>
                 <input
                   value={draft.title}
                   onChange={(event) =>
@@ -201,8 +201,8 @@ export default function EntryCard({
                   required
                 />
               </label>
-              <label>
-                Khmer title
+              <label className="entry-edit-field">
+                <span>Khmer title</span>
                 <input
                   lang="km"
                   value={draft.khmer_title}
@@ -211,8 +211,8 @@ export default function EntryCard({
                   }
                 />
               </label>
-              <label>
-                Description
+              <label className="entry-edit-field">
+                <span>Description</span>
                 <textarea
                   value={draft.description}
                   onChange={(event) =>
@@ -220,8 +220,8 @@ export default function EntryCard({
                   }
                 />
               </label>
-              <label>
-                Category
+              <label className="entry-edit-field">
+                <span>Category</span>
                 <select
                   value={draft.category}
                   onChange={(event) =>
@@ -235,15 +235,19 @@ export default function EntryCard({
                   ))}
                 </select>
               </label>
-              <div style={{ display: "flex", gap: "0.5rem" }}>
-                <button type="submit" disabled={isSaving} style={actionButtonStyle}>
+              <div className="entry-edit-actions">
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="entry-action-button entry-action-button--save"
+                >
                   {isSaving ? "Saving…" : "Save"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsEditing(false)}
                   disabled={isSaving}
-                  style={actionButtonStyle}
+                  className="entry-action-button entry-action-button--cancel"
                 >
                   Cancel
                 </button>

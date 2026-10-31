@@ -1,8 +1,15 @@
 ﻿// components/archive/AboutCollection.js
 //
-// Enhanced About page with glassmorphism cards, 2×2 objectives grid,
-// gold-left-border feature callout, scannable methodology table,
-// and a prominent full-width CTA block.
+// About page for the Khmer Living Archive.
+// Museum-grade dark editorial layout, fully bilingual via useLanguage().
+//
+// Structure (top → bottom):
+//   1. Hero header — amber eyebrow pill + serif title
+//   2. Mission statement — glassmorphic hero card
+//   3. Core objectives — 2×2 card grid with numbered badges
+//   4. Kampong Speu roots — gradient feature callout with gold left border
+//   5. Methodology — clean documentation standards grid
+//   6. Call to action — full-width banner with glowing amber button
 
 "use client";
 
@@ -14,81 +21,78 @@ export default function AboutCollection() {
 
   return (
     <section id="about" className="about">
-      {/* ── Hero Header ── */}
+      {/* ── 1. Hero Header ── */}
       <RevealOnScroll>
-        <div className="about__hero-header">
-          <h2 className="about__hero-heading">{t("aboutHeading")}</h2>
-          <span className="about__badge">{t("aboutBadge")}</span>
+        <div className="about__hero">
+          <span className="about__eyebrow" aria-hidden="true">
+            {t("aboutBadge")}
+          </span>
+          <h1 className="about__title">{t("aboutHeading")}</h1>
         </div>
       </RevealOnScroll>
 
-      {/* ── Glassmorphism Mission Card ── */}
+      {/* ── 2. Mission — Glassmorphic Card ── */}
       <RevealOnScroll>
-        <div className="about__mission-glass">
+        <div className="about__mission">
           <p>{t("aboutMission")}</p>
         </div>
       </RevealOnScroll>
 
-      {/* ── 2×2 Core Objectives Grid ── */}
+      {/* ── 3. Core Objectives — 2×2 Grid ── */}
       <RevealOnScroll>
-        <div className="about__objectives-grid">
+        <div className="about__objectives">
           {t("aboutObjectives").map((obj, idx) => (
-            <div key={idx} className="about__objective-card">
+            <article key={idx} className="about__objective">
               <span className="about__objective-number" aria-hidden="true">
                 {String(idx + 1).padStart(2, "0")}
               </span>
               <p>{obj}</p>
-            </div>
+            </article>
           ))}
         </div>
       </RevealOnScroll>
 
-      {/* ── Rooted in Tradition — Feature Callout ── */}
+      {/* ── 4. Rooted in Tradition — Feature Callout ── */}
       <RevealOnScroll>
-        <div className="about__callout-feature">
+        <div className="about__callout">
           <p>{t("aboutRootedTradition")}</p>
         </div>
       </RevealOnScroll>
 
-      {/* ── Methodology Section ── */}
+      {/* ── 5. Methodology & Documentation Standards ── */}
       <RevealOnScroll>
-        <p className="about__methodology-header">{t("aboutMethodology")}</p>
-        <table className="about__methodology-table">
-          <thead>
-            <tr>
-              <th scope="col">{t("methodologyComponent1")}</th>
-              <th scope="col">{t("methodologyComponent2")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{t("methodologyDetail1")}</td>
-              <td>{t("methodologyDetail2")}</td>
-            </tr>
-            <tr>
-              <td>{t("methodologyDetail3")}</td>
-              <td>{t("methodologyDetail4")}</td>
-            </tr>
-            <tr>
-              <td>{t("methodologyDetail5")}</td>
-              <td>{t("methodologyDetail6")}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="about__methodology">
+          <p className="about__methodology-intro">{t("aboutMethodology")}</p>
+          <dl className="about__methodology-grid">
+            <div className="about__methodology-row">
+              <dt>{t("methodologyDetail1")}</dt>
+              <dd>{t("methodologyDetail2")}</dd>
+            </div>
+            <div className="about__methodology-row">
+              <dt>{t("methodologyDetail3")}</dt>
+              <dd>{t("methodologyDetail4")}</dd>
+            </div>
+            <div className="about__methodology-row">
+              <dt>{t("methodologyDetail5")}</dt>
+              <dd>{t("methodologyDetail6")}</dd>
+            </div>
+          </dl>
+        </div>
       </RevealOnScroll>
 
-      {/* ── Call to Action — Full-width CTA ── */}
+      {/* ── 6. Call to Action — Full-width Banner ── */}
       <RevealOnScroll>
-        <div className="about__cta-card">
+        <div className="about__cta">
           <p>{t("aboutCallToAction")}</p>
           <a
             href="/contribute"
             className="about__cta-button"
             aria-label={t("navContribute")}
-            rel="noopener noreferrer"
           >
-            <span>Contribute an Entry</span>
-            <span className="arrow" aria-hidden="true">&rarr;</span>
+            <span>{t("contributeCtaButton")}</span>
+            <span className="about__cta-arrow" aria-hidden="true">
+              &rarr;
+            </span>
           </a>
         </div>
       </RevealOnScroll>

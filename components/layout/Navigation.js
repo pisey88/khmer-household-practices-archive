@@ -44,6 +44,7 @@ export default function Navigation() {
   const { t } = useLanguage();
   const pathname = usePathname();
   const [user, setUser] = useState(null);
+  const [isReviewer, setIsReviewer] = useState(false);
   const [authError, setAuthError] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -76,16 +77,32 @@ export default function Navigation() {
     }
 
     const supabase = createClient();
+    const checkReviewer = async () => {
+      const { data } = await supabase.rpc("is_reviewer");
+      setIsReviewer(data === true);
+    };
     const getSession = async () => {
       const { data } = await supabase.auth.getSession();
-      setUser(data.session?.user || null);
+      const sessionUser = data.session?.user || null;
+      setUser(sessionUser);
+      if (sessionUser) {
+        checkReviewer();
+      } else {
+        setIsReviewer(false);
+      }
     };
 
     getSession();
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setUser(session?.user || null);
+        const sessionUser = session?.user || null;
+        setUser(sessionUser);
+        if (sessionUser) {
+          checkReviewer();
+        } else {
+          setIsReviewer(false);
+        }
       }
     );
 
@@ -169,6 +186,16 @@ export default function Navigation() {
           >
             {t("navContribute")}
           </a>
+          {isReviewer && (
+            <a
+              href="/review"
+              className={`nav-link ${pathname === "/review" ? "nav-link--active" : ""}`}
+              aria-current={pathname === "/review" ? "page" : undefined}
+              onClick={() => setNavOpen(false)}
+            >
+              {t("navReview")}
+            </a>
+          )}
           {authError ? (
             <span className="nav-auth-error">{t("navAuthUnavailable")}</span>
           ) : user ? (
