@@ -1,9 +1,8 @@
 // components/review/ReviewQueue.js
 //
 // Client component that owns the review queue state. Decisions go through the
-// review_entry RPC — the entries table is never updated directly here. The
-// sort control re-fetches the pending queue through the same RLS-protected
-// client, ordered by created_at in the chosen direction.
+// review_entry RPC. Reviewer edits are validated with is_reviewer and saved
+// through the RLS-protected client. Sorting fetches pending entries in order.
 
 "use client";
 
@@ -114,6 +113,71 @@ export default function ReviewQueue({ initialEntries }) {
     setEntries((current) => current.filter((item) => item.id !== entry.id));
   };
 
+  const handleEdit = async (entry, draft) => {
+    setActionError(null);
+
+    if (!isSupabaseConfigured()) {
+      setActionError(t("reviewEditFailed"));
+      return false;
+    }
+
+    const supabase = createClient();
+    if (!supabase) {
+      setActionError(t("reviewEditFailed"));
+      return false;
+    }
+
+    setBusyId(entry.id);
+    try {
+      const { data: isReviewer, error: reviewerError } = await supabase.rpc(
+        "is_reviewer"
+      );
+      if (reviewerError) {
+        console.error("Unable to verify reviewer access for entry edit:", reviewerError);
+        setActionError(t("reviewEditFailed"));
+        return false;
+      }
+      if (isReviewer !== true) {
+        setActionError(t("reviewEditUnauthorized"));
+        return false;
+      }
+
+      const { data, error } = await supabase
+        .from("entries")
+        .update({
+          title: draft.title,
+          khmer_title: draft.khmer_title,
+          description: draft.description,
+          category: draft.category,
+          province: draft.province,
+        })
+        .eq("id", entry.id)
+        .eq("status", "pending")
+        .select();
+
+      if (error) {
+        console.error("Failed to save reviewer edits:", error);
+        setActionError(t("reviewEditFailed"));
+        return false;
+      }
+      if (!data || data.length === 0) {
+        setActionError(t("reviewEditFailed"));
+        return false;
+      }
+
+      setEntries((current) =>
+        current.map((item) => (item.id === entry.id ? data[0] : item))
+      );
+      return true;
+    } catch (error) {
+      console.error("Failed to save reviewer edits:", error);
+      setActionError(t("reviewEditFailed"));
+      return false;
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   return (
     <main className="review-page">
       <h1 className="review-title">{t("reviewTitle")}</h1>
@@ -200,6 +264,7 @@ export default function ReviewQueue({ initialEntries }) {
                 entry={entry}
                 busy={busyId === entry.id}
                 onDecision={handleDecision}
+                onSaveEdit={handleEdit}
               />
             ))}
           </div>

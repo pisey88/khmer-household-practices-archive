@@ -1169,6 +1169,17 @@ a {
   color: var(--color-parchment);
 }
 
+.review-button--edit {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: var(--color-charcoal);
+}
+
+.review-button--edit:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
 .review-button--publish:hover:not(:disabled) {
   filter: brightness(1.08);
   transform: translateY(-1px);
