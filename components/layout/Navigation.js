@@ -1,9 +1,7 @@
 // components/layout/Navigation.js
 //
-// Archive and About are anchor links to homepage sections, since the
-// homepage IS the collection (no separate /archive route). Sources isn't
-// built yet, so it's left out of the nav for now rather than linking to
-// an empty page — add it back once a Sources page/section exists.
+// Home and Archive are separate routes. Sources isn't built yet, so it's
+// left out of the nav rather than linking to an empty page.
 
 "use client";
 
@@ -163,10 +161,10 @@ export default function Navigation() {
             {t("navHome")}
           </a>
           <a
-            href={pathname === "/" ? "#archive" : "/#archive"}
-            className={`nav-link ${pathname === "/" && activeAnchor === "#archive" ? "nav-link--active" : ""}`}
-            aria-current={pathname === "/" && activeAnchor === "#archive" ? "location" : undefined}
-            onClick={() => { setActiveAnchor("#archive"); setNavOpen(false); }}
+            href="/archive"
+            className={`nav-link ${pathname === "/archive" ? "nav-link--active" : ""}`}
+            aria-current={pathname === "/archive" ? "page" : undefined}
+            onClick={() => setNavOpen(false)}
           >
             {t("navArchive")}
           </a>

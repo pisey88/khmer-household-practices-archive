@@ -30,8 +30,9 @@ function readInitialStateFromURL() {
   };
 }
 
-export default function ArchiveGrid() {
+export default function ArchiveGrid({ previewLimit = null }) {
   const { language, pick, t } = useLanguage();
+  const isPreview = Number.isInteger(previewLimit) && previewLimit > 0;
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [hydrated, setHydrated] = useState(false);
@@ -64,11 +65,14 @@ export default function ArchiveGrid() {
         return;
       }
 
-      const { data, error: fetchError } = await supabase
+      let entriesQuery = supabase
         .from("entries")
         .select("*")
         .eq("status", "published")
-        .order("id", { ascending: false });
+        .order(isPreview ? "created_at" : "id", { ascending: false });
+      if (isPreview) entriesQuery = entriesQuery.limit(previewLimit);
+
+      const { data, error: fetchError } = await entriesQuery;
 
       if (cancelled) return;
 
@@ -87,28 +91,32 @@ export default function ArchiveGrid() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isPreview, previewLimit]);
 
   // Read ?q= and ?category= once on mount (client-only — avoids SSR/CSR
   // markup mismatches, since the server doesn't see the URL's query string).
   useEffect(() => {
+    if (isPreview) {
+      setHydrated(true);
+      return;
+    }
     const initial = readInitialStateFromURL();
     setQuery(initial.query);
     setActiveCategory(initial.category);
     setHydrated(true);
-  }, []);
+  }, [isPreview]);
 
   // Keep the URL in sync as filters change, without adding history entries
   // for every keystroke.
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || isPreview) return;
     const params = new URLSearchParams();
     if (debouncedQuery) params.set("q", debouncedQuery);
     if (activeCategory !== "All") params.set("category", activeCategory);
     const search = params.toString();
     const url = search ? `${window.location.pathname}?${search}` : window.location.pathname;
     window.history.replaceState(null, "", url + window.location.hash);
-  }, [debouncedQuery, activeCategory, hydrated]);
+  }, [debouncedQuery, activeCategory, hydrated, isPreview]);
 
   const categoryCounts = useMemo(() => {
     if (!entries || !Array.isArray(entries)) return {};
@@ -155,7 +163,7 @@ export default function ArchiveGrid() {
   // --- Loading state ---
   if (loading) {
     return (
-      <section id="archive" className="archive-grid">
+      <section id={isPreview ? undefined : "archive"} className={`archive-grid${isPreview ? " archive-grid--preview" : ""}`}>
         <p className="archive-grid__empty" style={{ textAlign: "center", padding: "3rem 0" }}>
           {t("archiveLoading")}
         </p>
@@ -166,7 +174,7 @@ export default function ArchiveGrid() {
   // --- Error state ---
   if (error) {
     return (
-      <section id="archive" className="archive-grid">
+      <section id={isPreview ? undefined : "archive"} className={`archive-grid${isPreview ? " archive-grid--preview" : ""}`}>
         <p className="archive-grid__empty" style={{ textAlign: "center", padding: "3rem 0", color: "#b91c1c" }}>
           {t(error)}
         </p>
@@ -175,17 +183,19 @@ export default function ArchiveGrid() {
   }
 
   return (
-    <section id="archive" className="archive-grid">
-      <SearchFilter
-        categories={CATEGORIES}
-        categoryCounts={categoryCounts}
-        activeCategory={activeCategory}
-        onCategoryChange={setActiveCategory}
-        query={query}
-        onQueryChange={setQuery}
-        resultCount={filteredEntries.length}
-        totalCount={entries.length}
-      />
+    <section id={isPreview ? undefined : "archive"} className={`archive-grid${isPreview ? " archive-grid--preview" : ""}`}>
+      {!isPreview && (
+        <SearchFilter
+          categories={CATEGORIES}
+          categoryCounts={categoryCounts}
+          activeCategory={activeCategory}
+          onCategoryChange={setActiveCategory}
+          query={query}
+          onQueryChange={setQuery}
+          resultCount={filteredEntries.length}
+          totalCount={entries.length}
+        />
+      )}
 
       {filteredEntries.length === 0 ? (
         <p className="archive-grid__empty">

@@ -5,6 +5,7 @@ import { collectionConfig } from "../collection.config.js";
 import { createClient, isSupabaseConfigured } from "../lib/supabase/client.js";
 import ArchiveGrid from "../components/archive/ArchiveGrid.js";
 import { useLanguage } from "../components/common/LanguageProvider.js";
+import Footer from "../components/layout/Footer.js";
 
 export default function HomePage() {
   const { language, t } = useLanguage();
@@ -85,25 +86,25 @@ export default function HomePage() {
             <h2 id="categories-heading">{t("homeCategoriesHeading")}</h2>
           </div>
           <div className="categories-grid">
-            <a href="#archive" className="category-card">
+            <a href="/archive" className="category-card">
               <span className="category-card__number">01</span>
               <h3>{t("homeCategoryFood")}</h3>
               <p>{t("homeCategoryFoodDescription")}</p>
               <span className="category-card__arrow" aria-hidden="true">↗</span>
             </a>
-            <a href="#archive" className="category-card">
+            <a href="/archive" className="category-card">
               <span className="category-card__number">02</span>
               <h3>{t("homeCategoryLighting")}</h3>
               <p>{t("homeCategoryLightingDescription")}</p>
               <span className="category-card__arrow" aria-hidden="true">↗</span>
             </a>
-            <a href="#archive" className="category-card">
+            <a href="/archive" className="category-card">
               <span className="category-card__number">03</span>
               <h3>{t("homeCategoryRice")}</h3>
               <p>{t("homeCategoryRiceDescription")}</p>
               <span className="category-card__arrow" aria-hidden="true">↗</span>
             </a>
-            <a href="#archive" className="category-card">
+            <a href="/archive" className="category-card">
               <span className="category-card__number">04</span>
               <h3>{t("homeCategoryCrafts")}</h3>
               <p>{t("homeCategoryCraftsDescription")}</p>
@@ -112,7 +113,20 @@ export default function HomePage() {
           </div>
         </section>
 
-        <ArchiveGrid />
+        <section id="archive" className="home-archive-preview" aria-labelledby="home-archive-heading">
+          <div className="section-heading">
+            <div>
+              <p className="label">{t("homeExploreHeading")}</p>
+              <h2 id="home-archive-heading">{t("homeArchivePreviewHeading")}</h2>
+            </div>
+          </div>
+          <ArchiveGrid previewLimit={4} />
+          <div className="home-archive-preview__action">
+            <a href="/archive" className="landing-button landing-button--primary">
+              {t("homeSeeMoreArchive")} <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </section>
 
         <section className="contributor-cta" aria-labelledby="contributor-heading">
           <div>
@@ -123,46 +137,7 @@ export default function HomePage() {
           <a href="/contribute" className="landing-button landing-button--primary contributor-cta__button">{t("homeBecomeContributor")} <span aria-hidden="true">→</span></a>
         </section>
       </main>
-      <footer className="landing-footer">
-        <span className="landing-footer__watermark" aria-hidden="true">
-          បណ្ណសារប្រពៃណីគ្រួសារខ្មែរ
-        </span>
-        <div className="landing-footer__main">
-          <div className="landing-footer__brand">
-            <p className="landing-footer__title">{t("siteTitle")}</p>
-            <p className="landing-footer__mission">{t("footerMission")}</p>
-            <span className="landing-footer__status">🟢 {t("footerStatus")}</span>
-          </div>
-
-          <nav className="landing-footer__column" aria-label={t("homeExploreNavigationLabel")}>
-            <p className="landing-footer__heading">{t("footerExplore")}</p>
-            <a href="#top">{t("navHome")}</a>
-            <a href="#archive">{t("footerArchiveCollection")}</a>
-            <a href="#categories-heading">{t("footerCategories")}</a>
-            <a href="/about">{t("navAbout")}</a>
-          </nav>
-
-          <nav className="landing-footer__column" aria-label={t("homeContributeNavigationLabel")}>
-            <p className="landing-footer__heading">{t("footerContribute")}</p>
-            <a href="/signup">{t("footerSubmitPractice")}</a>
-            <a href="#contributor-heading">{t("footerContributorGuide")}</a>
-            <a href="/login">{t("navLogin")}</a>
-            <a href="/signup">{t("navSignup")}</a>
-          </nav>
-
-          <blockquote className="landing-footer__quote">
-            {t("footerQuote")}
-          </blockquote>
-        </div>
-
-        <div className="landing-footer__bottom">
-          <p>{t("footerCopyright")}</p>
-          <div className="landing-footer__badges" aria-label={t("homeTechnologyLabel")}>
-            <span>{t("footerNextJs")}</span>
-            <span>{t("footerSupabase")}</span>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }
