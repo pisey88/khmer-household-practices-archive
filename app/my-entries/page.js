@@ -39,6 +39,8 @@ const MyEntriesCard = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoError, setPhotoError] = useState(null);
   const [draft, setDraft] = useState({
     title: entry?.title || "",
     khmer_title: entry?.khmer_title || "",
@@ -88,8 +90,35 @@ const MyEntriesCard = ({
     currentUser?.id && (currentUser.id === entry.owner || currentUser.id === entry.user_id)
   );
 
+  const handlePhotoChange = (event) => {
+    const file = event.target.files?.[0] ?? null;
+    if (!file) {
+      setPhotoFile(null);
+      setPhotoError(null);
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setPhotoFile(null);
+      setPhotoError("contributeImageTooLarge");
+      event.target.value = "";
+      return;
+    }
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setPhotoFile(null);
+      setPhotoError("contributeImageInvalidType");
+      event.target.value = "";
+      return;
+    }
+
+    setPhotoFile(file);
+    setPhotoError(null);
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
+    if (photoError) return;
     setIsSaving(true);
 
     const supabase = createClient();
@@ -128,7 +157,35 @@ const MyEntriesCard = ({
       khmer_title: draft.khmer_title.trim(),
       category: draft.category,
       description: draft.description.trim(),
+      photo_url: entry.photo_url || null,
     };
+
+    if (photoFile) {
+      try {
+        const filePath = `${user.id}/${Date.now()}_${photoFile.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from("photos")
+          .upload(filePath, photoFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage
+          .from("photos")
+          .getPublicUrl(filePath);
+        if (!publicUrlData?.publicUrl) {
+          throw new Error("Unable to retrieve the public URL.");
+        }
+        updatePayload.photo_url = publicUrlData.publicUrl;
+      } catch (uploadError) {
+        console.error("Failed to upload replacement photo:", uploadError);
+        window.alert(
+          "Photo upload failed: " +
+            (uploadError.message || "Please try again.")
+        );
+        setIsSaving(false);
+        return;
+      }
+    }
 
     if (!isReviewer) {
       updatePayload.status = "pending";
@@ -209,6 +266,8 @@ const MyEntriesCard = ({
   };
 
   const handleCancel = () => {
+    setPhotoFile(null);
+    setPhotoError(null);
     setDraft({
       title: entry.title || "",
       khmer_title: entry.khmer_title || "",
@@ -284,18 +343,40 @@ const MyEntriesCard = ({
                   }
                 />
               </div>
-              {entry.photo_url && (
-                <div className="my-entries__edit-photo">
-                  <p className="my-entries__edit-photo-label">
-                    {t("cardCurrentPhoto")}
-                  </p>
-                  <img
-                    src={entry.photo_url}
-                    alt=""
-                    className="my-entries__edit-photo-image"
+              <div className="my-entries__edit-photo">
+                {entry.photo_url && (
+                  <>
+                    <p className="my-entries__edit-photo-label">
+                      {t("cardCurrentPhoto")}
+                    </p>
+                    <img
+                      src={entry.photo_url}
+                      alt=""
+                      className="my-entries__edit-photo-image"
+                    />
+                  </>
+                )}
+                <div className="my-entries__edit-field my-entries__photo-field">
+                  <label htmlFor={`edit-photo-${entry.id}`}>
+                    {t("contributePhoto")}
+                  </label>
+                  <input
+                    id={`edit-photo-${entry.id}`}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handlePhotoChange}
+                    disabled={isSaving}
                   />
+                  <span className="my-entries__photo-hint">
+                    {t("contributePhotoHint")}
+                  </span>
+                  {photoError && (
+                    <span className="my-entries__photo-error" role="alert">
+                      {t(photoError)}
+                    </span>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
             <div className="my-entries__edit-actions">
               <button

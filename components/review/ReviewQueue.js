@@ -189,7 +189,30 @@ export default function ReviewQueue({ initialEntries }) {
       )}
 
       {entries.length === 0 ? (
-        <p className="review-empty">{t("reviewEmpty")}</p>
+        <div className="review-empty-state">
+          <span className="review-empty-state__icon" aria-hidden="true">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m5 12 4 4L19 6" />
+            </svg>
+          </span>
+          <p className="review-empty">{t("reviewEmpty")}</p>
+          <a
+            href="/my-entries"
+            className="landing-button landing-button--primary review-empty-state__link"
+          >
+            {t("reviewAllEntries")}
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
       ) : (
         <>
           <div
