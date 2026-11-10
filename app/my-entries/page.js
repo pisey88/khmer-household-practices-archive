@@ -29,16 +29,12 @@ function bilingualStatusLabel(status) {
   return `${en} / ${km}`;
 }
 
-const actionButtonStyle = {
-  border: "1px solid var(--color-border)",
-  borderRadius: "var(--radius-sm)",
-  padding: "0.45rem 0.8rem",
-  background: "var(--color-card-bg)",
-  color: "var(--color-brown)",
-  cursor: "pointer",
-};
-
-const MyEntriesCard = ({ entry, onEntryUpdated, onEntryDeleted }) => {
+const MyEntriesCard = ({
+  entry,
+  canManageEntry,
+  onEntryUpdated,
+  onEntryDeleted,
+}) => {
   const { language, t } = useLanguage();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -97,13 +93,35 @@ const MyEntriesCard = ({ entry, onEntryUpdated, onEntryDeleted }) => {
     setIsSaving(true);
 
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    if (!supabase) {
+      window.alert("Update failed: Supabase is not configured.");
+      setIsSaving(false);
+      return;
+    }
 
-    if (!user) return;
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      window.alert("Update failed: Unable to verify the current user.");
+      setIsSaving(false);
+      return;
+    }
 
     const { data: isReviewerData, error: reviewerError } = await supabase
       .rpc("is_reviewer");
+    if (reviewerError) {
+      console.error("Unable to check reviewer access:", reviewerError);
+    }
     const isReviewer = !reviewerError && isReviewerData === true;
+
+    if (user.id !== entry.owner && !isReviewer) {
+      window.alert("Update failed: You do not have permission to edit this entry.");
+      setIsSaving(false);
+      return;
+    }
 
     const updatePayload = {
       title: draft.title.trim(),
@@ -134,31 +152,42 @@ const MyEntriesCard = ({ entry, onEntryUpdated, onEntryDeleted }) => {
       return;
     }
 
-    supabase
-      .from("entries")
-      .select("*")
-      .eq("owner", user.id)
-      .order("id", { ascending: false })
-      .then(({ data: refreshedData, error: fetchError }) => {
-        if (fetchError) {
-          console.error("Failed to refresh entries:", fetchError);
-        } else {
-          onEntryUpdated(refreshedData ?? []);
-        }
-        setIsEditing(false);
-        setIsSaving(false);
-      });
+    await onEntryUpdated();
+    setIsEditing(false);
+    setIsSaving(false);
   };
 
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this entry?")) return;
 
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    if (!supabase) {
+      window.alert("Delete failed: Supabase is not configured.");
+      return;
+    }
 
-    if (!user) return;
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+    if (userError || !user) {
+      window.alert("Delete failed: Unable to verify the current user.");
+      return;
+    }
 
-    const { error } = await supabase
+    const { data: reviewerData, error: reviewerError } =
+      await supabase.rpc("is_reviewer");
+    if (reviewerError) {
+      console.error("Unable to check reviewer access:", reviewerError);
+    }
+    const isReviewer = !reviewerError && reviewerData === true;
+
+    if (user.id !== entry.owner && !isReviewer) {
+      window.alert("Delete failed: You do not have permission to delete this entry.");
+      return;
+    }
+
+    const { data, error } = await supabase
       .from("entries")
       .delete()
       .eq("id", entry.id)
@@ -169,18 +198,14 @@ const MyEntriesCard = ({ entry, onEntryUpdated, onEntryDeleted }) => {
       return;
     }
 
-    supabase
-      .from("entries")
-      .select("*")
-      .eq("owner", user.id)
-      .order("id", { ascending: false })
-      .then(({ data: refreshedData, error: fetchError }) => {
-        if (fetchError) {
-          console.error("Failed to refresh entries:", fetchError);
-        } else {
-          onEntryDeleted(refreshedData ?? []);
-        }
-      });
+    if (!data || data.length === 0) {
+      window.alert(
+        "Delete failed: No row was deleted. Your database permissions may not allow this action."
+      );
+      return;
+    }
+
+    await onEntryDeleted();
   };
 
   const handleCancel = () => {
@@ -319,19 +344,19 @@ const MyEntriesCard = ({ entry, onEntryUpdated, onEntryDeleted }) => {
           </>
         )}
       </div>
-      {isOwner && (
+      {(isOwner || canManageEntry) && (
         <div className="my-entries__card-actions">
           <button
             type="button"
             onClick={() => setIsEditing(true)}
-            style={actionButtonStyle}
+            className="my-entries__action-button"
           >
             {t("myEntriesEdit")}
           </button>
           <button
             type="button"
             onClick={handleDelete}
-            style={actionButtonStyle}
+            className="my-entries__action-button my-entries__action-button--delete"
           >
             {t("myEntriesDelete")}
           </button>
@@ -342,45 +367,141 @@ const MyEntriesCard = ({ entry, onEntryUpdated, onEntryDeleted }) => {
 }
 
 export default function MyEntriesPage() {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   const [user, setUser] = useState(null);
+  const [isReviewer, setIsReviewer] = useState(false);
+  const [showAllEntries, setShowAllEntries] = useState(false);
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let active = true;
+
     if (!isSupabaseConfigured()) {
       setError("contributeAuthNotConfigured");
       setLoading(false);
-      return;
+      return () => {
+        active = false;
+      };
     }
 
     const supabase = createClient();
 
-    supabase.auth.getSession().then(({ data }) => {
-      const sessionUser = data.session?.user;
-      setUser(sessionUser ?? null);
+    const loadEntries = async () => {
+      setLoading(true);
+      setError(null);
 
-      if (!sessionUser) {
-        setLoading(false);
+      const { data: sessionData, error: sessionError } =
+        await supabase.auth.getSession();
+      if (sessionError) {
+        console.error("Unable to read the current session:", sessionError);
+        if (active) {
+          setError(sessionError.message);
+          setLoading(false);
+        }
         return;
       }
 
-      supabase
-        .from("entries")
-        .select("*")
-        .eq("owner", sessionUser.id)
-        .order("id", { ascending: false })
-        .then(({ data: entriesData, error: fetchError }) => {
-          if (fetchError) {
-            setError(fetchError.message);
-          } else {
-            setEntries(entriesData ?? []);
-          }
+      const sessionUser = sessionData.session?.user ?? null;
+      if (active) setUser(sessionUser);
+      if (!sessionUser) {
+        if (active) {
+          setIsReviewer(false);
+          setShowAllEntries(false);
+          setEntries([]);
           setLoading(false);
-        });
+        }
+        return;
+      }
+
+      const { data: reviewerData, error: reviewerError } =
+        await supabase.rpc("is_reviewer");
+      if (reviewerError) {
+        console.error("Unable to check reviewer access:", reviewerError);
+      }
+      const reviewer = !reviewerError && reviewerData === true;
+      if (active) {
+        setIsReviewer(reviewer);
+        if (!reviewer && showAllEntries) setShowAllEntries(false);
+      }
+
+      let query = supabase.from("entries").select("*");
+      if (!(reviewer && showAllEntries)) {
+        query = query.eq("owner", sessionUser.id);
+      }
+
+      const { data: entriesData, error: fetchError } = await query.order(
+        "created_at",
+        { ascending: false }
+      );
+
+      if (!active) return;
+      if (fetchError) {
+        setError(fetchError.message);
+      } else {
+        setEntries(entriesData ?? []);
+      }
+      setLoading(false);
+    };
+
+    loadEntries().catch((loadError) => {
+      console.error("Failed to load entries:", loadError);
+      if (active) {
+        setError(loadError.message || "Unable to load entries.");
+        setLoading(false);
+      }
     });
-  }, []);
+
+    return () => {
+      active = false;
+    };
+  }, [showAllEntries]);
+
+  const refreshEntries = async () => {
+    const supabase = createClient();
+    if (!supabase) {
+      setError("contributeAuthNotConfigured");
+      return;
+    }
+
+    const {
+      data: { user: sessionUser },
+      error: userError,
+    } = await supabase.auth.getUser();
+    if (userError || !sessionUser) {
+      setError(userError?.message || "Unable to verify the current user.");
+      return;
+    }
+
+    const { data: reviewerData, error: reviewerError } =
+      await supabase.rpc("is_reviewer");
+    if (reviewerError) {
+      console.error("Unable to check reviewer access:", reviewerError);
+    }
+    const reviewer = !reviewerError && reviewerData === true;
+    setIsReviewer(reviewer);
+    if (!reviewer && showAllEntries) setShowAllEntries(false);
+
+    let query = supabase.from("entries").select("*");
+    if (!(reviewer && showAllEntries)) {
+      query = query.eq("owner", sessionUser.id);
+    }
+
+    const { data: entriesData, error: fetchError } = await query.order(
+      "created_at",
+      { ascending: false }
+    );
+    if (fetchError) {
+      setError(fetchError.message);
+    } else {
+      setEntries(entriesData ?? []);
+      setError(null);
+    }
+  };
+
+  const publishedCount = entries.filter((entry) => entry.status === "published").length;
+  const pendingCount = entries.filter((entry) => entry.status === "pending").length;
 
   return (
     <main className="archive-page">
@@ -395,31 +516,81 @@ export default function MyEntriesPage() {
           </p>
         ) : !user ? (
           <>
-            <h1 className="my-entries__title">{t("myEntriesTitle")}</h1>
-            <p className="my-entries__empty" style={{ textAlign: "center", padding: "3rem 0" }}>
-              <a href="/login" style={{ color: "#c86243" }}>{t("navLogin")}</a>
-            </p>
-          </>
-        ) : entries.length === 0 ? (
-          <>
-            <h1 className="my-entries__title">{t("myEntriesTitle")}</h1>
-            <p className="my-entries__empty" style={{ textAlign: "center", padding: "3rem 0" }}>
-              {t("myEntriesEmpty")}
+            <header className="my-entries__header">
+              <div>
+                <h1 className="my-entries__title">{t("myEntriesTitle")}</h1>
+                <p className="my-entries__description">{t("myEntriesDescription")}</p>
+              </div>
+            </header>
+            <p className="my-entries__empty">
+              <a href="/login" className="my-entries__login-link">{t("navLogin")}</a>
             </p>
           </>
         ) : (
           <>
-            <h1 className="my-entries__title">{t("myEntriesTitle")}</h1>
-            <div className="my-entries__grid">
-              {entries.map((entry) => (
-                <MyEntriesCard
-                  key={entry.id}
-                  entry={entry}
-                  onEntryUpdated={setEntries}
-                  onEntryDeleted={setEntries}
-                />
-              ))}
+            <header className="my-entries__header">
+              <div>
+                <h1 className="my-entries__title">
+                  {t(showAllEntries ? "allEntriesTitle" : "myEntriesTitle")}
+                </h1>
+                <p className="my-entries__description">
+                  {t(showAllEntries ? "allEntriesDescription" : "myEntriesDescription")}
+                </p>
+              </div>
+              <div className="my-entries__header-actions">
+                {isReviewer && (
+                  <button
+                    type="button"
+                    className="my-entries__view-toggle"
+                    aria-pressed={showAllEntries}
+                    onClick={() => setShowAllEntries((showingAll) => !showingAll)}
+                  >
+                    {t(showAllEntries ? "myEntriesTitle" : "allEntriesTitle")}
+                  </button>
+                )}
+                <a href="/contribute" className="landing-button landing-button--primary my-entries__add-button">
+                  {t("navContribute")} <span aria-hidden="true">+</span>
+                </a>
+              </div>
+            </header>
+
+            <div className="my-entries__stats" aria-label={t("myEntriesSummary")}>
+              <div className="my-entries__stat">
+                <span className="my-entries__stat-value">{entries.length}</span>
+                <span className="my-entries__stat-label">
+                  {t(showAllEntries ? "allEntriesTotal" : "myEntriesTotal")}
+                </span>
+              </div>
+              <div className="my-entries__stat">
+                <span className="my-entries__stat-value">{publishedCount}</span>
+                <span className="my-entries__stat-label">{t("statusPublished")}</span>
+              </div>
+              <div className="my-entries__stat">
+                <span className="my-entries__stat-value">{pendingCount}</span>
+                <span className="my-entries__stat-label">{t("statusPending")}</span>
+              </div>
             </div>
+
+            {entries.length === 0 ? (
+              <div className="my-entries__empty">
+                <p>{t(showAllEntries ? "allEntriesEmpty" : "myEntriesEmpty")}</p>
+                <a href="/contribute" className="landing-button landing-button--secondary">
+                  {t("navContribute")} <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            ) : (
+              <div className="my-entries__grid">
+                {entries.map((entry) => (
+                  <MyEntriesCard
+                    key={entry.id}
+                    entry={entry}
+                    canManageEntry={isReviewer && showAllEntries}
+                    onEntryUpdated={refreshEntries}
+                    onEntryDeleted={refreshEntries}
+                  />
+                ))}
+              </div>
+            )}
           </>
         )}
       </section>
