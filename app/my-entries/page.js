@@ -308,6 +308,7 @@ const MyEntriesCard = ({
                   type="text"
                   id="edit-khmer-title"
                   name="khmer_title"
+                  lang="km"
                   value={draft.khmer_title}
                   onChange={(e) =>
                     setDraft({ ...draft, khmer_title: e.target.value })

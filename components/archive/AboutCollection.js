@@ -17,7 +17,7 @@ import { useLanguage } from "../common/LanguageProvider.js";
 import RevealOnScroll from "../common/RevealOnScroll.js";
 
 export default function AboutCollection() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
 
   return (
     <section id="about" className="about">
@@ -27,14 +27,14 @@ export default function AboutCollection() {
           <span className="about__eyebrow" aria-hidden="true">
             {t("aboutBadge")}
           </span>
-          <h1 className="about__title">{t("aboutHeading")}</h1>
+          <h1 className="about__title" lang={language}>{t("aboutHeading")}</h1>
         </div>
       </RevealOnScroll>
 
       {/* ── 2. Mission — Glassmorphic Card ── */}
       <RevealOnScroll>
         <div className="about__mission">
-          <p>{t("aboutMission")}</p>
+          <p lang={language}>{t("aboutMission")}</p>
         </div>
       </RevealOnScroll>
 

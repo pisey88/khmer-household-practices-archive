@@ -30,7 +30,10 @@ function readInitialStateFromURL() {
   };
 }
 
-export default function ArchiveGrid({ previewLimit = null }) {
+export default function ArchiveGrid({
+  previewLimit = null,
+  showOwnerActions = true,
+}) {
   const { language, pick, t } = useLanguage();
   const isPreview = Number.isInteger(previewLimit) && previewLimit > 0;
   const [query, setQuery] = useState("");
@@ -208,6 +211,7 @@ export default function ArchiveGrid({ previewLimit = null }) {
               key={entry.id}
               entry={entry}
               reverse={index % 2 === 1}
+              showOwnerActions={showOwnerActions}
               onEntryDeleted={(deletedId) =>
                 setEntries((currentEntries) =>
                   currentEntries.filter((item) => item.id !== deletedId)

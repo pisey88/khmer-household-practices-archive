@@ -1,16 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { collectionConfig } from "../collection.config.js";
 import { createClient, isSupabaseConfigured } from "../lib/supabase/client.js";
 import ArchiveGrid from "../components/archive/ArchiveGrid.js";
 import { useLanguage } from "../components/common/LanguageProvider.js";
 import Footer from "../components/layout/Footer.js";
+import { CAMBODIAN_PROVINCES } from "../lib/provinces.js";
 
 export default function HomePage() {
   const { language, t } = useLanguage();
   const [entryCount, setEntryCount] = useState(collectionConfig.entryCount);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [showcaseEntries, setShowcaseEntries] = useState([]);
+  const [showcaseLoading, setShowcaseLoading] = useState(true);
+  const [showcaseError, setShowcaseError] = useState(false);
+  const [activeShowcaseIndex, setActiveShowcaseIndex] = useState(0);
 
   // Fetch the live entry count from Supabase; fall back to the static
   // config count if Supabase isn't configured or the fetch fails.
@@ -41,42 +47,224 @@ export default function HomePage() {
     fetchEntryCount();
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchShowcaseEntries() {
+      if (!isSupabaseConfigured()) {
+        setShowcaseError(true);
+        setShowcaseLoading(false);
+        return;
+      }
+
+      const supabase = createClient();
+      if (!supabase) {
+        setShowcaseError(true);
+        setShowcaseLoading(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from("entries")
+          .select("*")
+          .eq("status", "published")
+          .order("created_at", { ascending: false })
+          .limit(6);
+
+        if (cancelled) return;
+
+        if (error) {
+          console.error("Failed to fetch homepage showcase entries:", error.message);
+          setShowcaseError(true);
+          return;
+        }
+
+        setShowcaseEntries(data ?? []);
+      } catch (error) {
+        if (cancelled) return;
+        console.error("Failed to fetch homepage showcase entries:", error);
+        setShowcaseError(true);
+      } finally {
+        if (!cancelled) setShowcaseLoading(false);
+      }
+    }
+
+    fetchShowcaseEntries();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (showcaseEntries.length < 2) return undefined;
+
+    const intervalId = window.setInterval(() => {
+      setActiveShowcaseIndex((index) => (index + 1) % showcaseEntries.length);
+    }, 5000);
+
+    return () => window.clearInterval(intervalId);
+  }, [showcaseEntries.length]);
+
   const displayCount = statsLoading ? collectionConfig.entryCount : entryCount;
+  const activeEntry = showcaseEntries[activeShowcaseIndex];
+  const provinceName = activeEntry?.province || collectionConfig.province;
+  const activeProvince =
+    language === "km"
+      ? CAMBODIAN_PROVINCES.find(
+          (province) =>
+            province.en === provinceName || province.km === provinceName
+        )?.km || provinceName
+      : provinceName;
+  const activeCategoryKey = activeEntry?.category
+    ? `category${activeEntry.category.replace(/\s/g, "")}`
+    : "";
+  const activeCategory = activeCategoryKey
+    ? t(activeCategoryKey) === activeCategoryKey
+      ? activeEntry.category
+      : t(activeCategoryKey)
+    : "";
+  const activeTitle =
+    language === "km"
+      ? activeEntry?.khmer_title || activeEntry?.title
+      : activeEntry?.title || activeEntry?.khmer_title;
 
   return (
     <>
       <main id="top" className="archive-page">
         <section className="landing-hero">
           <div className="landing-hero__glow" aria-hidden="true" />
-          <div className="landing-hero__content">
-            <p className="landing-badge">✦ {t("homeBadge")}</p>
-            <h1>{t("homeTitle")}</h1>
-            <p className="landing-hero__description">
-              {language === "km" ? t("homeDescription") : `${collectionConfig.description} ${t("homeDescription")}`}
-            </p>
-            <div className="landing-actions">
-              <a href="#archive" className="landing-button landing-button--primary">
-                {t("homeExploreCollection")} <span aria-hidden="true">↓</span>
-              </a>
-              <a href="/contribute" className="landing-button landing-button--secondary">
-                {t("homeSubmitPractice")} <span aria-hidden="true">+</span>
-              </a>
+          <div className="landing-hero__layout">
+            <div className="landing-hero__content">
+              <p className="landing-badge">
+                <span lang="km">បណ្ណសារប្រពៃណីគ្រួសារខ្មែរ</span>
+                <span aria-hidden="true">•</span>
+                <span lang="en">KHMER HERITAGE ARCHIVE</span>
+              </p>
+              <h1 lang={language}>{t("homeTitle")}</h1>
+              <p className="landing-hero__description" lang={language}>
+                {t("homeDescription")}
+              </p>
+              <div className="landing-actions">
+                <Link href="/archive" className="landing-button landing-button--primary">
+                  {t("homeExploreCollection")} <span aria-hidden="true">→</span>
+                </Link>
+                <Link href="/contribute" className="landing-button landing-button--secondary">
+                  {t("homeSubmitPractice")} <span aria-hidden="true">+</span>
+                </Link>
+              </div>
+              <section className="landing-hero__stats" aria-label={t("homeArchiveStatsLabel")}>
+                <div className="landing-hero__stat">
+                  <span className="landing-hero__stat-value">25</span>
+                  <span className="landing-hero__stat-label">{t("homeProvincesLabel")}</span>
+                </div>
+                <div className="landing-hero__stat">
+                  <span className="landing-hero__stat-value">{displayCount}</span>
+                  <span className="landing-hero__stat-label">{t("homePracticesArchived")}</span>
+                </div>
+              </section>
             </div>
-          </div>
-        </section>
 
-        <section className="landing-stats" aria-label={t("homeArchiveStatsLabel")}>
-          <div className="landing-stat">
-            <span className="landing-stat__value">{String(displayCount).padStart(2, "0")}</span>
-            <span className="landing-stat__label">{t("homePracticesArchived")}</span>
-          </div>
-          <div className="landing-stat">
-            <span className="landing-stat__value landing-stat__value--region">{collectionConfig.province}</span>
-            <span className="landing-stat__label">{t("homePrimaryRegion")}</span>
-          </div>
-          <div className="landing-stat">
-            <span className="landing-stat__value">100%</span>
-            <span className="landing-stat__label">{t("homeCommunitySourced")}</span>
+            <div className="landing-showcase">
+              {activeEntry ? (
+                <>
+                  <Link href="/archive" className="landing-showcase__image-link">
+                    <div className="landing-showcase__frame">
+                      {activeEntry.photo_url ? (
+                        <img
+                          key={activeEntry.id}
+                          className="landing-showcase__image"
+                          src={activeEntry.photo_url}
+                          alt={activeTitle || ""}
+                        />
+                      ) : (
+                        <div
+                          key={activeEntry.id}
+                          className="landing-showcase__image landing-showcase__image--placeholder"
+                          role="img"
+                          aria-label={t("homeShowcaseImageUnavailable")}
+                        >
+                          <span aria-hidden="true">✦</span>
+                        </div>
+                      )}
+                      {activeCategory && (
+                        <span className="landing-showcase__category" lang={language}>
+                          {activeCategory}
+                        </span>
+                      )}
+                    </div>
+                  </Link>
+                  <div className="landing-showcase__meta">
+                    <div className="landing-showcase__eyebrow-row">
+                      <Link href="/archive" className="landing-showcase__eyebrow-link">
+                        <p className="landing-showcase__eyebrow" lang={language}>
+                          {t("homeFeaturedEntry")} <span aria-hidden="true">•</span> {activeProvince}
+                        </p>
+                      </Link>
+                      <div
+                        className="landing-showcase__dots"
+                        role="group"
+                        aria-label={t("homeShowcaseNavigation")}
+                      >
+                        {showcaseEntries.map((entry, index) => (
+                          <button
+                            key={entry.id}
+                            type="button"
+                            className={`landing-showcase__dot${index === activeShowcaseIndex ? " landing-showcase__dot--active" : ""}`}
+                            aria-label={t("homeShowcaseEntry", { number: index + 1 })}
+                            aria-current={index === activeShowcaseIndex ? "true" : undefined}
+                            onClick={() => setActiveShowcaseIndex(index)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <Link href="/archive" className="landing-showcase__text-link">
+                      <h2
+                        lang={
+                          activeTitle === activeEntry.khmer_title && activeEntry.khmer_title
+                            ? "km"
+                            : language
+                        }
+                      >
+                        {activeTitle}
+                      </h2>
+                      {activeEntry.title &&
+                        activeEntry.khmer_title &&
+                        activeEntry.title !== activeTitle && (
+                          <p
+                            className="landing-showcase__secondary-title"
+                            lang={language === "km" ? "en" : "km"}
+                          >
+                            {language === "km" ? activeEntry.title : activeEntry.khmer_title}
+                          </p>
+                        )}
+                      {activeEntry.description && (
+                        <p className="landing-showcase__excerpt" lang="en">
+                          {activeEntry.description}
+                        </p>
+                      )}
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <div className="landing-showcase__empty">
+                  <span className="landing-showcase__empty-mark" aria-hidden="true">✦</span>
+                  <p lang={language}>
+                    {t(
+                      showcaseLoading
+                        ? "homeShowcaseLoading"
+                        : showcaseError
+                          ? "homeShowcaseUnavailable"
+                          : "homeShowcaseEmpty"
+                    )}
+                  </p>
+                  <Link href="/archive" className="landing-button landing-button--secondary">
+                    {t("homeSeeMoreArchive")} <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </section>
 

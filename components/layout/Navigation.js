@@ -8,6 +8,7 @@
 import { useLanguage } from "../common/LanguageProvider.js";
 import LanguageToggle from "../common/LanguageToggle.js";
 import ThemeToggle from "../common/ThemeToggle.js";
+import { collectionConfig } from "../../collection.config.js";
 import { createClient, isSupabaseConfigured } from "../../lib/supabase/client.js";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
@@ -64,7 +65,7 @@ export default function Navigation() {
     if (window.location.pathname === "/") {
       event.preventDefault();
       setActiveAnchor("");
-      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+      window.history.replaceState(null, "", "/");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
@@ -139,7 +140,7 @@ export default function Navigation() {
   return (
     <header className="nav">
       <a href="/" className="nav-title" onClick={handleHomeClick}>
-        {t("siteTitle")}
+        {collectionConfig.siteTitle}
       </a>
       <button
         type="button"

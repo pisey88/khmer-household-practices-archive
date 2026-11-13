@@ -15,7 +15,7 @@ export default function ArchivePage() {
           <h1>{t("archivePageTitle")}</h1>
           <p>{t("archivePageDescription")}</p>
         </header>
-        <ArchiveGrid />
+        <ArchiveGrid showOwnerActions={false} />
       </main>
       <Footer />
     </>

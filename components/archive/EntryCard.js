@@ -18,6 +18,7 @@ const actionButtonStyle = {
 export default function EntryCard({
   entry,
   reverse = false,
+  showOwnerActions = true,
   onEntryDeleted,
   onEntryUpdated,
 }) {
@@ -296,7 +297,7 @@ export default function EntryCard({
           </dl>
         )}
 
-        {isOwner && !isEditing && (
+        {showOwnerActions && isOwner && !isEditing && (
           <div style={{ display: "flex", gap: "0.5rem" }}>
             <button
               type="button"
