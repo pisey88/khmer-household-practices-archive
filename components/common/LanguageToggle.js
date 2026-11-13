@@ -4,23 +4,16 @@ import { useLanguage } from "./LanguageProvider.js";
 
 export default function LanguageToggle() {
   const { language, setLanguage, t } = useLanguage();
+  const nextLanguage = language === "en" ? "km" : "en";
 
   return (
-    <div className="language-toggle" aria-label={t("languageToggleLabel")} role="group">
-      <button
-        type="button"
-        className={`language-toggle__btn ${language === "en" ? "active" : ""}`}
-        onClick={() => setLanguage("en")}
-      >
-        EN
-      </button>
-      <button
-        type="button"
-        className={`language-toggle__btn ${language === "km" ? "active" : ""}`}
-        onClick={() => setLanguage("km")}
-      >
-        ខ្មែរ
-      </button>
-    </div>
+    <button
+      type="button"
+      className="nav-control language-toggle"
+      aria-label={t(nextLanguage === "km" ? "switchToKhmer" : "switchToEnglish")}
+      onClick={() => setLanguage(nextLanguage)}
+    >
+      {language === "en" ? "🇬🇧" : "🇰🇭"}
+    </button>
   );
 }

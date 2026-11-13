@@ -3,6 +3,7 @@
 import { Fraunces, Inter, Noto_Sans_Khmer } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider, useLanguage } from "../components/common/LanguageProvider.js";
+import { ThemeProvider } from "../components/common/ThemeProvider.js";
 import Navigation from "../components/layout/Navigation.js";
 
 const fraunces = Fraunces({
@@ -45,7 +46,9 @@ function RootContent({ children }) {
 export default function RootLayout({ children }) {
   return (
     <LanguageProvider>
-      <RootContent>{children}</RootContent>
+      <ThemeProvider>
+        <RootContent>{children}</RootContent>
+      </ThemeProvider>
     </LanguageProvider>
   );
 }

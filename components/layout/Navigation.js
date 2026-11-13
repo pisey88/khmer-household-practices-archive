@@ -7,6 +7,7 @@
 
 import { useLanguage } from "../common/LanguageProvider.js";
 import LanguageToggle from "../common/LanguageToggle.js";
+import ThemeToggle from "../common/ThemeToggle.js";
 import { createClient, isSupabaseConfigured } from "../../lib/supabase/client.js";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
@@ -230,7 +231,10 @@ export default function Navigation() {
           )}
         </nav>
         <div className="nav-actions-divider" aria-hidden="true" />
-        <LanguageToggle />
+        <div className="nav-preferences">
+          <ThemeToggle />
+          <LanguageToggle />
+        </div>
       </div>
     </header>
   );
