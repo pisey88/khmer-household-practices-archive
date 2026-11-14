@@ -129,6 +129,18 @@ export default function HomePage() {
     language === "km"
       ? activeEntry?.khmer_title || activeEntry?.title
       : activeEntry?.title || activeEntry?.khmer_title;
+  const activeDescription =
+    language === "km"
+      ? activeEntry?.description_km || activeEntry?.description
+      : activeEntry?.description || activeEntry?.description_km;
+  const activeDescriptionLanguage =
+    language === "km"
+      ? activeEntry?.description_km
+        ? "km"
+        : "en"
+      : activeEntry?.description
+        ? "en"
+        : "km";
 
   return (
     <>
@@ -239,9 +251,12 @@ export default function HomePage() {
                             {language === "km" ? activeEntry.title : activeEntry.khmer_title}
                           </p>
                         )}
-                      {activeEntry.description && (
-                        <p className="landing-showcase__excerpt" lang="en">
-                          {activeEntry.description}
+                      {activeDescription && (
+                        <p
+                          className="landing-showcase__excerpt"
+                          lang={activeDescriptionLanguage}
+                        >
+                          {activeDescription}
                         </p>
                       )}
                     </Link>
@@ -308,7 +323,7 @@ export default function HomePage() {
               <h2 id="home-archive-heading">{t("homeArchivePreviewHeading")}</h2>
             </div>
           </div>
-          <ArchiveGrid previewLimit={4} />
+          <ArchiveGrid previewLimit={4} showOwnerActions={false} />
           <div className="home-archive-preview__action">
             <a href="/archive" className="landing-button landing-button--primary">
               {t("homeSeeMoreArchive")} <span aria-hidden="true">→</span>

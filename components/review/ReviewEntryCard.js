@@ -69,7 +69,14 @@ export default function ReviewEntryCard({ entry, busy, onDecision, onSaveEdit })
             )}
 
             {entry.description && (
-              <p className="review-card__description">{entry.description}</p>
+              <p className="review-card__description" lang="en">
+                {entry.description}
+              </p>
+            )}
+            {entry.description_km && (
+              <p className="review-card__description" lang="km">
+                {entry.description_km}
+              </p>
             )}
 
             <dl className="review-card__meta">

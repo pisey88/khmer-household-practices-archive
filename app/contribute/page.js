@@ -22,6 +22,7 @@ export default function ContributePage() {
     khmer_title: '',
     category: 'Cooking',
     description: '',
+    description_km: '',
     province: 'Kampong Speu',
     contributor_name: '',
     contributor_name_km: '',
@@ -116,6 +117,7 @@ export default function ContributePage() {
           category: formData.category,
           province: formData.province,
           description: formData.description.trim(),
+          description_km: formData.description_km.trim() || null,
           contributor_name: formData.contributor_name.trim(),
           contributor_name_km: formData.contributor_name_km.trim(),
           photo_url,
@@ -271,19 +273,37 @@ export default function ContributePage() {
                   />
                 </div>
 
-                <div className="contribute-field contribute-field--wide">
-                  <label htmlFor="description">{t('contributeDescriptionLabel')}</label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    rows={5}
-                    value={formData.description}
-                    onChange={handleChange}
-                    required
-                    minLength={10}
-                    maxLength={2000}
-                    placeholder={t('contributePlaceholderDescription')}
-                  />
+                <div className="contribute-field contribute-field--wide contribute-descriptions">
+                  <div className="contribute-descriptions__grid">
+                    <div className="contribute-field">
+                      <label htmlFor="description">{t('contributeDescriptionEnglish')}</label>
+                      <textarea
+                        id="description"
+                        name="description"
+                        lang="en"
+                        rows={5}
+                        value={formData.description}
+                        onChange={handleChange}
+                        required
+                        minLength={10}
+                        maxLength={2000}
+                        placeholder={t('contributePlaceholderDescription')}
+                      />
+                    </div>
+                    <div className="contribute-field">
+                      <label htmlFor="description_km">{t('contributeDescriptionKhmer')}</label>
+                      <textarea
+                        id="description_km"
+                        name="description_km"
+                        lang="km"
+                        rows={5}
+                        value={formData.description_km}
+                        onChange={handleChange}
+                        maxLength={2000}
+                        placeholder={t('contributePlaceholderDescriptionKhmer')}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="contribute-field contribute-field--wide">

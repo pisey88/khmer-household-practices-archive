@@ -178,14 +178,16 @@ export default function Navigation() {
           >
             {t("navAbout")}
           </a>
-          <a
-            href="/contribute"
-            className={`nav-link ${pathname === "/contribute" ? "nav-link--active" : ""}`}
-            aria-current={pathname === "/contribute" ? "page" : undefined}
-            onClick={() => setNavOpen(false)}
-          >
-            {t("navContribute")}
-          </a>
+          {user && (
+            <a
+              href="/my-entries"
+              className={`nav-link ${pathname === "/my-entries" ? "nav-link--active" : ""}`}
+              aria-current={pathname === "/my-entries" ? "page" : undefined}
+              onClick={() => setNavOpen(false)}
+            >
+              {t("navMyEntries")}
+            </a>
+          )}
           {isReviewer && (
             <a
               href="/review"
@@ -214,9 +216,6 @@ export default function Navigation() {
               {profileOpen && (
                 <div className="nav-profile-menu" role="menu">
                   <p className="nav-profile-email">{user.email}</p>
-                  <a href="/my-entries" className="nav-profile-entry" role="menuitem">
-                    {t("navMyEntries")}
-                  </a>
                   <div className="nav-profile-divider" />
                   <button type="button" className="nav-profile-logout" onClick={handleLogout} role="menuitem">
                     {t("navLogout")}

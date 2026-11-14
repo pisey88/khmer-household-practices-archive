@@ -14,6 +14,7 @@ export default function ReviewEntryEditor({ entry, busy, onCancel, onSave }) {
     title: entry.title || "",
     khmer_title: entry.khmer_title || "",
     description: entry.description || "",
+    description_km: entry.description_km || "",
     category: entry.category || CATEGORIES[0],
     province: province || entry.province || "",
   });
@@ -46,10 +47,18 @@ export default function ReviewEntryEditor({ entry, busy, onCancel, onSave }) {
         />
       </label>
       <label className="entry-edit-field">
-        <span>{t("reviewDescriptionLabel")}</span>
+        <span>{t("contributeDescriptionEnglish")}</span>
         <textarea
           value={draft.description}
           onChange={(event) => updateField("description", event.target.value)}
+        />
+      </label>
+      <label className="entry-edit-field">
+        <span>{t("contributeDescriptionKhmer")}</span>
+        <textarea
+          lang="km"
+          value={draft.description_km}
+          onChange={(event) => updateField("description_km", event.target.value)}
         />
       </label>
       <label className="entry-edit-field">

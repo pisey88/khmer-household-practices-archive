@@ -150,6 +150,7 @@ export default function ArchiveGrid({
         entry.title,
         entry.khmer_title,
         entry.description,
+        entry.description_km,
         entry.contributor_name,
         entry.contributor_name_km,
         entry.province,

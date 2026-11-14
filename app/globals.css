@@ -1749,23 +1749,6 @@ html[data-theme="light"] .review-button--return {
   }
 }
 
-/* -- Profile menu "My Entries" link -- */
-.nav-profile-entry {
-  display: block;
-  padding: 0.55rem 1rem;
-  color: var(--color-charcoal);
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background-color var(--transition-fast),
-              color var(--transition-fast);
-}
-
-.nav-profile-entry:hover {
-  background-color: rgba(200, 98, 67, 0.08);
-  color: #c86243;
-}
-
 /* -- Contribute success state -- */
 .contribute-card--success {
   text-align: center;
@@ -2013,7 +1996,8 @@ html[data-theme="light"] .review-button--return {
   color: var(--color-brown);
   font-size: clamp(1.3rem, 2vw, 1.75rem);
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
   overflow-wrap: anywhere;
 }
 
@@ -2030,7 +2014,22 @@ html[data-theme="light"] .review-button--return {
 }
 
 .entry-eyebrow {
+  display: inline-block;
+  margin: 0 0 0.65rem;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid rgba(200, 98, 67, 0.25);
+  border-radius: var(--radius-full);
+  background: rgba(200, 98, 67, 0.1);
   color: var(--color-terracotta);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+:lang(km) .entry-eyebrow {
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .entry-edit-form {
@@ -2145,10 +2144,14 @@ html[data-theme="light"] .review-button--return {
 }
 
 .entry-khmer {
-  margin-top: 0.45rem;
-  margin-bottom: 0.75rem;
+  display: inline-block;
+  margin: 0.65rem 0 0.25rem;
+  padding: 0.3rem 0.7rem;
+  border-left: 2px solid var(--color-terracotta);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: rgba(200, 98, 67, 0.08);
   font-family: var(--font-khmer);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   line-height: 1.5;
   color: var(--color-brown);
   font-weight: 600;
@@ -2157,12 +2160,12 @@ html[data-theme="light"] .review-button--return {
 .entry-description {
   display: -webkit-box;
   overflow: hidden;
-  margin-top: 0.75rem;
+  margin-top: 0.85rem;
   color: var(--color-text-muted);
   font-size: 0.9rem;
-  line-height: 1.6;
+  line-height: 1.7;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
 }
 
 .entry-meta {
@@ -2177,16 +2180,18 @@ html[data-theme="light"] .review-button--return {
 .entry-meta__item {
   display: inline-flex;
   min-width: 0;
-  align-items: baseline;
-  gap: 0.25rem;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-card-bg);
   color: var(--color-text-muted);
   font-size: 0.75rem;
   line-height: 1.5;
 }
 
 .entry-meta__item svg {
-  position: relative;
-  top: 0.16rem;
   flex: 0 0 auto;
   width: 0.85rem;
   height: 0.85rem;
@@ -3542,11 +3547,17 @@ body {
 .contribute-form__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem 1rem;
+  gap: 1.4rem 1.1rem;
 }
 
 .contribute-field {
   min-width: 0;
+}
+
+.contribute-descriptions__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
 .contribute-field--wide {
@@ -3575,7 +3586,13 @@ body {
   color: #f8f4ec;
   font: inherit;
   font-size: 0.9rem;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+
+.contribute-field input:hover,
+.contribute-field select:hover,
+.contribute-field textarea:hover {
+  border-color: rgba(200, 98, 67, 0.42);
 }
 
 .contribute-field select {
@@ -3583,8 +3600,14 @@ body {
 }
 
 .contribute-field textarea {
-  min-height: 8.5rem;
+  min-height: 11rem;
+  line-height: 1.7;
   resize: vertical;
+}
+
+.contribute-field textarea[lang="km"] {
+  font-family: var(--font-khmer);
+  line-height: 1.8;
 }
 
 .contribute-field input::placeholder,
@@ -3760,6 +3783,11 @@ body {
   }
 
   .contribute-form__grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .contribute-descriptions__grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
@@ -3987,6 +4015,12 @@ html[data-theme="light"] .contribute-field textarea {
   border-color: rgba(43, 35, 31, 0.18);
   background: #fffdf9;
   color: #2b231f;
+}
+
+html[data-theme="light"] .contribute-field input:hover,
+html[data-theme="light"] .contribute-field select:hover,
+html[data-theme="light"] .contribute-field textarea:hover {
+  border-color: rgba(169, 76, 49, 0.55);
 }
 
 html[data-theme="light"] .contribute-field select {

@@ -45,6 +45,7 @@ const MyEntriesCard = ({
     title: entry?.title || "",
     khmer_title: entry?.khmer_title || "",
     description: entry?.description || "",
+    description_km: entry?.description_km || "",
     category: entry?.category || CATEGORIES[0],
   });
 
@@ -157,6 +158,7 @@ const MyEntriesCard = ({
       khmer_title: draft.khmer_title.trim(),
       category: draft.category,
       description: draft.description.trim(),
+      description_km: draft.description_km.trim() || null,
       photo_url: entry.photo_url || null,
     };
 
@@ -272,6 +274,7 @@ const MyEntriesCard = ({
       title: entry.title || "",
       khmer_title: entry.khmer_title || "",
       description: entry.description || "",
+      description_km: entry.description_km || "",
       category: entry.category || CATEGORIES[0],
     });
     setIsEditing(false);
@@ -333,7 +336,7 @@ const MyEntriesCard = ({
                 </select>
               </div>
               <div className="my-entries__edit-field">
-                <label htmlFor="edit-description">{t("cardDescription")}</label>
+                <label htmlFor="edit-description">{t("contributeDescriptionEnglish")}</label>
                 <textarea
                   id="edit-description"
                   name="description"
@@ -341,6 +344,19 @@ const MyEntriesCard = ({
                   value={draft.description}
                   onChange={(e) =>
                     setDraft({ ...draft, description: e.target.value })
+                  }
+                />
+              </div>
+              <div className="my-entries__edit-field">
+                <label htmlFor="edit-description-km">{t("contributeDescriptionKhmer")}</label>
+                <textarea
+                  id="edit-description-km"
+                  name="description_km"
+                  lang="km"
+                  rows={3}
+                  value={draft.description_km}
+                  onChange={(e) =>
+                    setDraft({ ...draft, description_km: e.target.value })
                   }
                 />
               </div>

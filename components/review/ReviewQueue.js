@@ -148,6 +148,7 @@ export default function ReviewQueue({ initialEntries }) {
           title: draft.title,
           khmer_title: draft.khmer_title,
           description: draft.description,
+          description_km: draft.description_km.trim() || null,
           category: draft.category,
           province: draft.province,
         })

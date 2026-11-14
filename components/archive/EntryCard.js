@@ -30,6 +30,7 @@ export default function EntryCard({
     title: entry?.title || "",
     khmer_title: entry?.khmer_title || "",
     description: entry?.description || "",
+    description_km: entry?.description_km || "",
     category: entry?.category || CATEGORIES[0],
   });
 
@@ -63,6 +64,7 @@ export default function EntryCard({
       title: entry?.title || "",
       khmer_title: entry?.khmer_title || "",
       description: entry?.description || "",
+      description_km: entry?.description_km || "",
       category: entry?.category || CATEGORIES[0],
     });
   }, [entry]);
@@ -75,7 +77,18 @@ export default function EntryCard({
   const category = entry?.category || "";
   const categoryKey = `category${category.replace(/\s/g, "")}`;
   const categoryLabel = t(categoryKey) === categoryKey ? category : t(categoryKey);
-  const description = entry?.description;
+  const description =
+    language === "km"
+      ? entry?.description_km || entry?.description
+      : entry?.description || entry?.description_km;
+  const descriptionLanguage =
+    language === "km"
+      ? entry?.description_km
+        ? "km"
+        : "en"
+      : entry?.description
+        ? "en"
+        : "km";
   const contributorName = entry?.contributor_name;
   const contributorNameKhmer = entry?.contributor_name_km;
   const province = entry?.province;
@@ -144,6 +157,7 @@ export default function EntryCard({
       title: draft.title,
       khmer_title: draft.khmer_title,
       description: draft.description,
+      description_km: draft.description_km.trim() || null,
       category: draft.category,
     };
 
@@ -213,11 +227,21 @@ export default function EntryCard({
                 />
               </label>
               <label className="entry-edit-field">
-                <span>Description</span>
+                <span>{t("contributeDescriptionEnglish")}</span>
                 <textarea
                   value={draft.description}
                   onChange={(event) =>
                     setDraft({ ...draft, description: event.target.value })
+                  }
+                />
+              </label>
+              <label className="entry-edit-field">
+                <span>{t("contributeDescriptionKhmer")}</span>
+                <textarea
+                  lang="km"
+                  value={draft.description_km}
+                  onChange={(event) =>
+                    setDraft({ ...draft, description_km: event.target.value })
                   }
                 />
               </label>
@@ -265,7 +289,9 @@ export default function EntryCard({
               )}
 
               {description && (
-                <p className="entry-description">{description}</p>
+                <p className="entry-description" lang={descriptionLanguage}>
+                  {description}
+                </p>
               )}
             </>
           )}

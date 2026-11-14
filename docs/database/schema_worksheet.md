@@ -39,6 +39,7 @@ While the core `entries` table contains `id`, `created_at`, and `owner`, the arc
 
 - `title` (text, required) – descriptive title of the entry.
 - `description` (text, required) – narrative content of the entry.
+- `description_km` (text, optional) – narrative content in Khmer.
 - `category` (text, required) – e.g., “Family History”, “Cultural Practice”.
 - `province` (text, required) – geographic region within Cambodia.
 - `photo_url` (text, optional) – link to an associated image.
@@ -52,3 +53,9 @@ These optional columns can be added incrementally in subsequent sprints without 
 For an existing Supabase project, run [`add_contributor_name_km.sql`](./add_contributor_name_km.sql)
 in the Supabase Dashboard SQL Editor. The migration is safe to rerun and refreshes
 the API schema cache so the contribution form can insert `contributor_name_km`.
+
+## Applying the Khmer description migration
+
+For an existing Supabase project, run [`add_description_km.sql`](./add_description_km.sql)
+in the Supabase Dashboard SQL Editor. The migration is safe to rerun and refreshes
+the API schema cache so the contribution form can save `description_km`.

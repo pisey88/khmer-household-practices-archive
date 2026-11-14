@@ -8,6 +8,7 @@ CREATE TABLE public.entries (
     category TEXT NOT NULL,
     province TEXT NOT NULL,
     description TEXT NOT NULL,
+    description_km TEXT,
     photo_url TEXT,
     contributor_name TEXT,
     contributor_name_km TEXT
@@ -16,6 +17,10 @@ CREATE TABLE public.entries (
 -- Add the nullable field to entries tables created before bilingual names were supported.
 ALTER TABLE public.entries
   ADD COLUMN IF NOT EXISTS contributor_name_km TEXT;
+
+-- Add the optional Khmer description to entries created before bilingual descriptions were supported.
+ALTER TABLE public.entries
+  ADD COLUMN IF NOT EXISTS description_km TEXT;
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.entries ENABLE ROW LEVEL SECURITY;
