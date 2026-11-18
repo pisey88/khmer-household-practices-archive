@@ -1,0 +1,73 @@
+# Data Model Worksheet – Khmer Household Practices Archive
+
+## Built-in Supabase Columns
+
+The following columns are natively provided by Supabase for the `entries` table:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | UUID | Primary key, unique identifier for each archival entry. |
+| `created_at` | Timestamp | Auto‑generated creation timestamp (default: `now()`). |
+| `owner` | Text | Name of the person who contributed the entry (e.g., “John Doe”). |
+
+## Table Schema Assumptions
+
+- **Primary Key**: `id` (UUID) – ensures each record is uniquely identifiable.
+- **Timestamps**: `created_at` records when the entry was added to the archive.
+- **Ownership**: `owner` tracks the contributor responsible for the entry.
+- **Extensibility**: Additional columns (title, description, photo_url, etc.) can be added later without breaking existing migrations.
+
+## Public Visibility Rules
+
+- **Public**: Entries with `owner` marked as “Community” or “Contributed” are publicly accessible.
+- **Private**: Entries owned solely by staff or internal contributors remain private and require authentication to view.
+- **Restricted**: Sensitive metadata (e.g., personal contact info) is excluded from public listings.
+
+## Sprint 3 Compatibility Checks
+
+| Check | Requirement | Status |
+|-------|-------------|--------|
+| Entry creation workflow | New entries must be saved via the admin interface, triggering `created_at` and `owner` population. | ✅ |
+| User contribution logging | Each entry must record the `owner` field during upload. | ✅ |
+| Access control | Only authenticated users can view entries; unauthenticated requests receive a 401. | ✅ |
+| Data integrity | Foreign‑key relationships (if added later) must reference existing tables. | ✅ |
+| Migration safety | The `CREATE TABLE` statement is backward‑compatible with existing schema (adds nullable columns only). | ✅ |
+
+## Metadata Fields (Optional)
+
+While the core `entries` table contains `id`, `created_at`, and `owner`, the archive also supports the following optional columns (defined in the worksheet):
+
+- `title` (text, required) – descriptive title of the entry.
+- `description` (text, required) – narrative content of the entry.
+- `description_km` (text, optional) – narrative content in Khmer.
+- `category` (text, required) – e.g., “Family History”, “Cultural Practice”.
+- `province` (text, required) – geographic region within Cambodia.
+- `photo_url` (text, optional) – link to an associated image.
+- `contributor_name` (text, optional) – full name of the contributor.
+- `contributor_name_km` (text, optional) – contributor name written in Khmer.
+
+Reviewer feedback is stored separately in `entry_review_feedback` so it is not
+exposed by public entry reads. The table links one current feedback message to
+each returned entry and permits reads only for its owner and authorized reviewers.
+
+These optional columns can be added incrementally in subsequent sprints without affecting the existing three‑column foundation.
+
+## Applying the Khmer contributor name migration
+
+For an existing Supabase project, run [`add_contributor_name_km.sql`](./add_contributor_name_km.sql)
+in the Supabase Dashboard SQL Editor. The migration is safe to rerun and refreshes
+the API schema cache so the contribution form can insert `contributor_name_km`.
+
+## Applying the Khmer description migration
+
+For an existing Supabase project, run [`add_description_km.sql`](./add_description_km.sql)
+in the Supabase Dashboard SQL Editor. The migration is safe to rerun and refreshes
+the API schema cache so the contribution form can save `description_km`.
+
+## Applying reviewer feedback support
+
+For an existing Supabase project, run [`add_review_feedback.sql`](./add_review_feedback.sql)
+in the Supabase Dashboard SQL Editor. It creates the protected feedback table
+and the reviewer-authorized RPC used to return a pending entry with feedback in
+one transaction. The feedback table’s row-level security limits access to the
+contributor who owns the entry and authorized reviewers.

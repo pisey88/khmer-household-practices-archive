@@ -1,0 +1,129 @@
+﻿// components/archive/AboutCollection.js
+//
+// About page for the Khmer Living Archive.
+// Museum-grade dark editorial layout, fully bilingual via useLanguage().
+//
+// Structure (top → bottom):
+//   1. Hero header — amber eyebrow pill + serif title
+//   2. Mission statement — glassmorphic hero card
+//   3. Core objectives — 2×2 card grid with numbered badges
+//   4. Kampong Speu roots — gradient feature callout with gold left border
+//   5. Methodology — clean documentation standards grid
+//   6. Call to action — full-width banner with glowing amber button
+//   7. Project credits — creator, course, and community attribution with glowing amber button
+
+"use client";
+
+import { useLanguage } from "../common/LanguageProvider.js";
+import RevealOnScroll from "../common/RevealOnScroll.js";
+import { collectionConfig } from "../../collection.config.js";
+
+export default function AboutCollection() {
+  const { language, t } = useLanguage();
+
+  return (
+    <section id="about" className="about">
+      {/* ── 1. Hero Header ── */}
+      <RevealOnScroll>
+        <div className="about__hero">
+          <span className="about__eyebrow" aria-hidden="true">
+            {t("aboutBadge")}
+          </span>
+          <h1 className="about__title" lang={language}>{t("aboutHeading")}</h1>
+        </div>
+      </RevealOnScroll>
+
+      {/* ── 2. Mission — Glassmorphic Card ── */}
+      <RevealOnScroll>
+        <div className="about__mission">
+          <p lang={language}>{t("aboutMission")}</p>
+        </div>
+      </RevealOnScroll>
+
+      {/* ── 3. Core Objectives — 2×2 Grid ── */}
+      <RevealOnScroll>
+        <div className="about__objectives">
+          {t("aboutObjectives").map((obj, idx) => (
+            <article key={idx} className="about__objective">
+              <span className="about__objective-number" aria-hidden="true">
+                {String(idx + 1).padStart(2, "0")}
+              </span>
+              <p>{obj}</p>
+            </article>
+          ))}
+        </div>
+      </RevealOnScroll>
+
+      {/* ── 4. Rooted in Tradition — Feature Callout ── */}
+      <RevealOnScroll>
+        <div className="about__callout">
+          <p>{t("aboutRootedTradition")}</p>
+        </div>
+      </RevealOnScroll>
+
+      {/* ── 5. Methodology & Documentation Standards ── */}
+      <RevealOnScroll>
+        <div className="about__methodology">
+          <p className="about__methodology-intro">{t("aboutMethodology")}</p>
+          <dl className="about__methodology-grid">
+            <div className="about__methodology-row">
+              <dt>{t("methodologyDetail1")}</dt>
+              <dd>{t("methodologyDetail2")}</dd>
+            </div>
+            <div className="about__methodology-row">
+              <dt>{t("methodologyDetail3")}</dt>
+              <dd>{t("methodologyDetail4")}</dd>
+            </div>
+            <div className="about__methodology-row">
+              <dt>{t("methodologyDetail5")}</dt>
+              <dd>{t("methodologyDetail6")}</dd>
+            </div>
+          </dl>
+        </div>
+      </RevealOnScroll>
+
+      {/* ── 6. Call to Action — Full-width Banner ── */}
+      <RevealOnScroll>
+        <div className="about__cta">
+          <p>{t("aboutCallToAction")}</p>
+          <a
+            href="/contribute"
+            className="about__cta-button"
+            aria-label={t("navContribute")}
+          >
+            <span>{t("contributeCtaButton")}</span>
+            <span className="about__cta-arrow" aria-hidden="true">
+              &rarr;
+            </span>
+          </a>
+        </div>
+      </RevealOnScroll>
+
+      {/* ── 7. Project Credits & Course Attribution ── */}
+      <RevealOnScroll>
+        <section className="about__credits" aria-labelledby="about-credits-heading">
+          <div className="about__credits-header">
+            <h2 id="about-credits-heading" lang={language}>
+              {t("aboutCreditsHeading")}
+            </h2>
+            <div className="about__credits-badges">
+              <span>ICT 340</span>
+              <span>Fall 2026</span>
+              <span>{collectionConfig.siteTitle}</span>
+            </div>
+          </div>
+          <div className="about__credits-details">
+            <p className="about__credits-creator" lang={language}>
+              <strong>{t("aboutCreditsCreator")}</strong>
+            </p>
+            <p lang={language}>{t("aboutCreditsCourse")}</p>
+            <p lang={language}>{t("aboutCreditsInstructor")}</p>
+          </div>
+          <p className="about__credits-transparency" lang={language}>
+            {t("aboutCreditsTransparency")}
+          </p>
+        </section>
+      </RevealOnScroll>
+    </section>
+  );
+}
