@@ -89,6 +89,17 @@ export default function ReviewQueue({ initialEntries }) {
   const handleDecision = async (entry, decision, feedback = "") => {
     setActionError(null);
 
+    if (
+      decision === "published" &&
+      (!entry.title?.trim() ||
+        !entry.khmer_title?.trim() ||
+        getTrimmedDescriptionLength(entry.description || "") < MIN_DESCRIPTION_LENGTH ||
+        getTrimmedDescriptionLength(entry.description_km || "") < MIN_DESCRIPTION_LENGTH)
+    ) {
+      setActionError(t("reviewTranslationsRequired"));
+      return false;
+    }
+
     if (decision === "returned" && !feedback.trim()) {
       setActionError(t("reviewFeedbackRequired"));
       return false;
@@ -142,6 +153,10 @@ export default function ReviewQueue({ initialEntries }) {
       setActionError(t("englishDescriptionTooShort"));
       return false;
     }
+    if (!draft.khmer_title.trim()) {
+      setActionError(t("entryKhmerTitleRequired"));
+      return false;
+    }
     if (
       getTrimmedDescriptionLength(draft.description_km) < MIN_DESCRIPTION_LENGTH
     ) {
@@ -184,6 +199,8 @@ export default function ReviewQueue({ initialEntries }) {
         khmer_title: draft.khmer_title.trim(),
         description: draft.description.trim(),
         description_km: draft.description_km.trim() || null,
+        contributor_name: draft.contributor_name.trim() || null,
+        contributor_name_km: draft.contributor_name_km.trim() || null,
         category: draft.category,
         province: draft.province,
       };

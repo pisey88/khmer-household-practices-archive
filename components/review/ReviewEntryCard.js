@@ -102,6 +102,12 @@ export default function ReviewEntryCard({ entry, busy, onDecision, onSaveEdit })
                 {entry.description_km}
               </p>
             )}
+            {entry.contributor_name && (
+              <p lang="en">{t("contributeNameEnglish")}: {entry.contributor_name}</p>
+            )}
+            {entry.contributor_name_km && (
+              <p lang="km">{t("contributeNameKhmer")}: {entry.contributor_name_km}</p>
+            )}
 
             <dl className="review-card__meta">
               <div className="review-card__meta-item">

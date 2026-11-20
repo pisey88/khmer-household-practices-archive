@@ -46,6 +46,12 @@ While the core `entries` table contains `id`, `created_at`, and `owner`, the arc
 - `contributor_name` (text, optional) – full name of the contributor.
 - `contributor_name_km` (text, optional) – contributor name written in Khmer.
 
+Contributors submit the title and description in the currently selected language.
+The other language's title and description remain blank while the entry is pending;
+reviewers add the missing translation before publishing. The database's required
+English `title` and `description` columns use empty strings until that translation
+is supplied.
+
 Reviewer feedback is stored separately in `entry_review_feedback` so it is not
 exposed by public entry reads. The table links one current feedback message to
 each returned entry and permits reads only for its owner and authorized reviewers.

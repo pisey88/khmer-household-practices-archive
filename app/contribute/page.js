@@ -62,6 +62,7 @@ export default function ContributePage() {
     setFormData({ ...formData, [name]: value });
     const resolvedError =
       (errorMsg === 'entryTitleRequired' && name === 'title' && value.trim()) ||
+      (errorMsg === 'entryKhmerTitleRequired' && name === 'khmer_title' && value.trim()) ||
       (errorMsg === 'englishDescriptionTooShort' &&
         name === 'description' &&
         getTrimmedDescriptionLength(value) >= MIN_DESCRIPTION_LENGTH) ||
@@ -100,13 +101,17 @@ export default function ContributePage() {
     e.preventDefault();
 
     let validationError = '';
-    if (!formData.title.trim()) {
+    if (language === 'km' && !formData.khmer_title.trim()) {
+      validationError = 'entryKhmerTitleRequired';
+    } else if (language === 'en' && !formData.title.trim()) {
       validationError = 'entryTitleRequired';
     } else if (
+      language === 'en' &&
       getTrimmedDescriptionLength(formData.description) < MIN_DESCRIPTION_LENGTH
     ) {
       validationError = 'englishDescriptionTooShort';
     } else if (
+      language === 'km' &&
       getTrimmedDescriptionLength(formData.description_km) < MIN_DESCRIPTION_LENGTH
     ) {
       validationError = 'khmerDescriptionTooShort';
@@ -159,7 +164,7 @@ export default function ContributePage() {
       const { error: insertError } = await supabase.from('entries').insert([
         {
           title: formData.title.trim(),
-          khmer_title: formData.khmer_title.trim(),
+          khmer_title: formData.khmer_title.trim() || null,
           category: formData.category,
           province: formData.province,
           description: formData.description.trim(),
@@ -227,6 +232,22 @@ export default function ContributePage() {
 
           <form onSubmit={handleSubmit} className="contribute-form" noValidate>
             <div className="contribute-form__grid">
+              {language === 'km' ? (
+                <div className="contribute-field">
+                  <label htmlFor="khmer_title">{t('contributeTitleKhmer')}</label>
+                  <input
+                    id="khmer_title"
+                    type="text"
+                    name="khmer_title"
+                    lang="km"
+                    value={formData.khmer_title}
+                    onChange={handleChange}
+                    required
+                    maxLength={150}
+                    placeholder={t('contributePlaceholderKhmerTitle')}
+                  />
+                </div>
+              ) : (
                 <div className="contribute-field">
                   <label htmlFor="title">{t('contributeTitleEnglish')}</label>
                   <input
@@ -240,71 +261,47 @@ export default function ContributePage() {
                     placeholder={t('contributePlaceholderTitle')}
                   />
                 </div>
+              )}
 
-                <div className="contribute-field">
-                  <label htmlFor="khmer_title">{t('contributeTitleKhmer')}</label>
-                  <input
-                    id="khmer_title"
-                    type="text"
-                    name="khmer_title"
-                    value={formData.khmer_title}
-                    onChange={handleChange}
-                    maxLength={150}
-                    placeholder={t('contributePlaceholderKhmerTitle')}
-                  />
-                </div>
+              <div className="contribute-field">
+                <label htmlFor="category">{t('contributeCategory')}</label>
+                <select
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                >
+                  {CATEGORIES.map((category) => {
+                    const key = `contributeCategory${category.replace(/\s/g, '')}`;
+                    const translation = t(key);
 
-                <div className="contribute-field">
-                  <label htmlFor="category">{t('contributeCategory')}</label>
-                  <select
-                    id="category"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                  >
-                    {CATEGORIES.map((category) => {
-                      const key = `contributeCategory${category.replace(/\s/g, '')}`;
-                      const translation = t(key);
-
-                      return (
-                        <option key={category} value={category}>
-                          {translation === key ? category : translation}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-
-                <div className="contribute-field">
-                  <label htmlFor="province">{t('contributeProvince')}</label>
-                  <select
-                    id="province"
-                    name="province"
-                    value={formData.province}
-                    onChange={handleChange}
-                    required
-                  >
-                    {CAMBODIAN_PROVINCES.map((province) => (
-                      <option key={province.en} value={province.en}>
-                        {language === "en" ? province.en : province.km}
+                    return (
+                      <option key={category} value={category}>
+                        {translation === key ? category : translation}
                       </option>
-                    ))}
-                  </select>
-                </div>
+                    );
+                  })}
+                </select>
+              </div>
 
-                <div className="contribute-field">
-                  <label htmlFor="contributor_name">{t('contributeNameEnglish')}</label>
-                  <input
-                    id="contributor_name"
-                    type="text"
-                    name="contributor_name"
-                    value={formData.contributor_name}
-                    onChange={handleChange}
-                    maxLength={150}
-                    placeholder={t('contributePlaceholderNameEnglish')}
-                  />
-                </div>
+              <div className="contribute-field">
+                <label htmlFor="province">{t('contributeProvince')}</label>
+                <select
+                  id="province"
+                  name="province"
+                  value={formData.province}
+                  onChange={handleChange}
+                  required
+                >
+                  {CAMBODIAN_PROVINCES.map((province) => (
+                    <option key={province.en} value={province.en}>
+                      {language === "en" ? province.en : province.km}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
+              {language === 'km' ? (
                 <div className="contribute-field">
                   <label htmlFor="contributor_name_km">{t('contributeNameKhmer')}</label>
                   <input
@@ -318,57 +315,72 @@ export default function ContributePage() {
                     placeholder={t('contributePlaceholderNameKhmer')}
                   />
                 </div>
-
-                <div className="contribute-field contribute-field--wide contribute-descriptions">
-                  <div className="contribute-descriptions__grid">
-                    <div className="contribute-field">
-                      <label htmlFor="description">{t('contributeDescriptionEnglish')}</label>
-                      <textarea
-                        id="description"
-                        name="description"
-                        lang="en"
-                        rows={5}
-                        value={formData.description}
-                        onChange={handleChange}
-                        required
-                        minLength={MIN_DESCRIPTION_LENGTH}
-                        maxLength={2000}
-                        placeholder={t('contributePlaceholderDescription')}
-                      />
-                      <DescriptionLengthFeedback value={formData.description} language="en" />
-                    </div>
-                    <div className="contribute-field">
-                      <label htmlFor="description_km">{t('contributeDescriptionKhmer')}</label>
-                      <textarea
-                        id="description_km"
-                        name="description_km"
-                        lang="km"
-                        rows={5}
-                        value={formData.description_km}
-                        onChange={handleChange}
-                        required
-                        minLength={MIN_DESCRIPTION_LENGTH}
-                        maxLength={2000}
-                        placeholder={t('contributePlaceholderDescriptionKhmer')}
-                      />
-                      <DescriptionLengthFeedback value={formData.description_km} language="km" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="contribute-field contribute-field--wide">
-                  <label htmlFor="photo">{t('contributePhoto')}</label>
+              ) : (
+                <div className="contribute-field">
+                  <label htmlFor="contributor_name">{t('contributeNameEnglish')}</label>
                   <input
-                    id="photo"
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handleFileChange}
-                    required
+                    id="contributor_name"
+                    type="text"
+                    name="contributor_name"
+                    value={formData.contributor_name}
+                    onChange={handleChange}
+                    maxLength={150}
+                    placeholder={t('contributePlaceholderNameEnglish')}
                   />
-                  <span className="contribute-field__hint">
-                    {t('contributePhotoHint')}
-                  </span>
                 </div>
+              )}
+
+              <div className="contribute-field contribute-field--wide">
+                {language === 'km' ? (
+                  <>
+                    <label htmlFor="description_km">{t('contributeDescriptionKhmer')}</label>
+                    <textarea
+                      id="description_km"
+                      name="description_km"
+                      lang="km"
+                      rows={5}
+                      value={formData.description_km}
+                      onChange={handleChange}
+                      required
+                      minLength={MIN_DESCRIPTION_LENGTH}
+                      maxLength={2000}
+                      placeholder={t('contributePlaceholderDescriptionKhmer')}
+                    />
+                    <DescriptionLengthFeedback value={formData.description_km} language="km" />
+                  </>
+                ) : (
+                  <>
+                    <label htmlFor="description">{t('contributeDescriptionEnglish')}</label>
+                    <textarea
+                      id="description"
+                      name="description"
+                      lang="en"
+                      rows={5}
+                      value={formData.description}
+                      onChange={handleChange}
+                      required
+                      minLength={MIN_DESCRIPTION_LENGTH}
+                      maxLength={2000}
+                      placeholder={t('contributePlaceholderDescription')}
+                    />
+                    <DescriptionLengthFeedback value={formData.description} language="en" />
+                  </>
+                )}
+              </div>
+
+              <div className="contribute-field contribute-field--wide">
+                <label htmlFor="photo">{t('contributePhoto')}</label>
+                <input
+                  id="photo"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleFileChange}
+                  required
+                />
+                <span className="contribute-field__hint">
+                  {t('contributePhotoHint')}
+                </span>
+              </div>
             </div>
 
             <button

@@ -21,6 +21,8 @@ export default function ReviewEntryEditor({ entry, busy, onCancel, onSave }) {
     khmer_title: entry.khmer_title || "",
     description: entry.description || "",
     description_km: entry.description_km || "",
+    contributor_name: entry.contributor_name || "",
+    contributor_name_km: entry.contributor_name_km || "",
     category: entry.category || CATEGORIES[0],
     province: province || entry.province || "",
   });
@@ -33,6 +35,9 @@ export default function ReviewEntryEditor({ entry, busy, onCancel, onSave }) {
     const errorResolved =
       (validationError === "entryTitleRequired" &&
         field === "title" &&
+        value.trim()) ||
+      (validationError === "entryKhmerTitleRequired" &&
+        field === "khmer_title" &&
         value.trim()) ||
       (validationError === "englishDescriptionTooShort" &&
         field === "description" &&
@@ -77,6 +82,8 @@ export default function ReviewEntryEditor({ entry, busy, onCancel, onSave }) {
     let nextValidationError = null;
     if (!draft.title.trim()) {
       nextValidationError = "entryTitleRequired";
+    } else if (!draft.khmer_title.trim()) {
+      nextValidationError = "entryKhmerTitleRequired";
     } else if (getTrimmedDescriptionLength(draft.description) < MIN_DESCRIPTION_LENGTH) {
       nextValidationError = "englishDescriptionTooShort";
     } else if (
@@ -115,6 +122,7 @@ export default function ReviewEntryEditor({ entry, busy, onCancel, onSave }) {
           lang="km"
           value={draft.khmer_title}
           onChange={(event) => updateField("khmer_title", event.target.value)}
+          required
         />
       </label>
       <div className="entry-edit-field entry-edit-field--description">
@@ -144,6 +152,21 @@ export default function ReviewEntryEditor({ entry, busy, onCancel, onSave }) {
         />
         <DescriptionLengthFeedback value={draft.description_km} />
       </div>
+      <label className="entry-edit-field">
+        <span>{t("contributeNameEnglish")}</span>
+        <input
+          value={draft.contributor_name}
+          onChange={(event) => updateField("contributor_name", event.target.value)}
+        />
+      </label>
+      <label className="entry-edit-field">
+        <span>{t("contributeNameKhmer")}</span>
+        <input
+          lang="km"
+          value={draft.contributor_name_km}
+          onChange={(event) => updateField("contributor_name_km", event.target.value)}
+        />
+      </label>
       <label className="entry-edit-field">
         <span>{t("reviewCategoryLabel")}</span>
         <select
