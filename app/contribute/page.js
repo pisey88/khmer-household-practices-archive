@@ -14,7 +14,7 @@ import {
 
 export default function ContributePage() {
   const router = useRouter();
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
 
   const [user, setUser] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -286,7 +286,7 @@ export default function ContributePage() {
                   >
                     {CAMBODIAN_PROVINCES.map((province) => (
                       <option key={province.en} value={province.en}>
-                        {province.en} / {province.km}
+                        {language === "en" ? province.en : province.km}
                       </option>
                     ))}
                   </select>
