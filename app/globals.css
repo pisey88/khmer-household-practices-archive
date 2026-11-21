@@ -5504,6 +5504,179 @@ html[data-theme="light"] .auth-switch a {
   }
 }
 
+/* Email / Phone identifier toggle --------------------------------------- */
+.auth-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem;
+  margin-bottom: 1.5rem;
+  padding: 0.3rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.85rem;
+  background: rgba(12, 10, 9, 0.45);
+}
+
+.auth-toggle__option {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 0.6rem;
+  background: transparent;
+  color: #b8afa7;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.auth-toggle__option:hover {
+  color: #f8f4ec;
+}
+
+.auth-toggle__option--active {
+  background: linear-gradient(135deg, #c86243, #a34c31);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(158, 67, 42, 0.32);
+}
+
+.auth-toggle__option:focus-visible,
+.auth-method-toggle:focus-visible,
+.auth-resend:focus-visible {
+  outline: 2px solid #e28a6b;
+  outline-offset: 3px;
+}
+
+.auth-hint {
+  margin: 0;
+  color: #91877f;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.auth-hint--value {
+  color: #e2b777;
+  font-weight: 600;
+}
+
+.auth-field input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-method-toggle {
+  margin-bottom: 1rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #e2b777;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.auth-method-toggle:hover {
+  color: #f0c98e;
+}
+
+/* SMS one-time-code step -------------------------------------------------- */
+.auth-otp {
+  margin-bottom: 1.2rem;
+}
+
+.auth-otp__message {
+  margin: 0 0 1rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(184, 147, 90, 0.35);
+  border-radius: 0.7rem;
+  background: rgba(184, 147, 90, 0.1);
+  color: #e7cfa6;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.auth-resend {
+  display: block;
+  width: 100%;
+  margin-top: 0.85rem;
+  padding: 0.4rem;
+  border: none;
+  background: none;
+  color: #b8afa7;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.auth-resend:hover:not(:disabled) {
+  color: #f0c98e;
+}
+
+.auth-resend:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.auth-notice {
+  margin: 1rem 0 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(163, 191, 140, 0.3);
+  border-radius: 0.7rem;
+  background: rgba(163, 191, 140, 0.1);
+  color: #c6dcb2;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+html[data-theme="light"] .auth-toggle {
+  border-color: rgba(43, 35, 31, 0.16);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+html[data-theme="light"] .auth-toggle__option {
+  color: #716761;
+}
+
+html[data-theme="light"] .auth-toggle__option:hover {
+  color: #2b231f;
+}
+
+html[data-theme="light"] .auth-hint {
+  color: #81766e;
+}
+
+html[data-theme="light"] .auth-hint--value {
+  color: #8d452b;
+}
+
+html[data-theme="light"] .auth-otp__message {
+  border-color: rgba(169, 76, 49, 0.24);
+  background: rgba(169, 76, 49, 0.08);
+  color: #6d3a24;
+}
+
+html[data-theme="light"] .auth-notice {
+  border-color: rgba(68, 82, 65, 0.26);
+  background: rgba(68, 82, 65, 0.08);
+  color: #3c4a39;
+}
+
+html[data-theme="light"] .auth-method-toggle,
+html[data-theme="light"] .auth-resend {
+  color: #8d452b;
+}
+
+html[data-theme="light"] .auth-method-toggle:hover,
+html[data-theme="light"] .auth-resend:hover:not(:disabled) {
+  color: #74351f;
+}
+
 .entry-detail-page {
   max-width: 80rem;
   padding: 7.5rem 2rem 5rem;

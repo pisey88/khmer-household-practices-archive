@@ -1,49 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { createClient } from "../../lib/supabase/client.js";
-import { useRouter } from "next/navigation";
 import { useLanguage } from "../../components/common/LanguageProvider.js";
 import { collectionConfig } from "../../collection.config.js";
+import IdentifierToggle from "../../components/auth/IdentifierToggle.js";
+import PhoneField from "../../components/auth/PhoneField.js";
+import PhoneOtpPanel from "../../components/auth/PhoneOtpPanel.js";
+import { useAuthForm } from "../../lib/useAuthForm.js";
+import {
+  PHONE_METHOD_OTP,
+  PHONE_METHOD_PASSWORD,
+} from "../../lib/auth.js";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const { t } = useLanguage();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    const supabase = createClient();
-
-    if (!supabase) {
-      setLoading(false);
-      setError(t("contributeAuthNotConfigured"));
-      return;
-    }
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    setLoading(false);
-
-    if (error) {
-      setError(t("authInvalidCredentials"));
-    } else {
-      router.push("/");
-    }
-  };
+  const form = useAuthForm("login");
 
   return (
     <main className="auth-page">
-      <form onSubmit={handleSubmit} className="auth-card">
+      <form onSubmit={form.submit} className="auth-card">
         <a href="/" className="auth-back-link">
           {t("authBackHome")}
         </a>
@@ -53,41 +27,85 @@ export default function LoginPage() {
         </div>
         <h1 className="auth-title">{t("authLoginTitle")}</h1>
 
-        <div className="auth-field">
-          <label htmlFor="email">
-            {t("authEmail")}
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            autoComplete="email"
-            placeholder={t("authEmailPlaceholder")}
+        <IdentifierToggle value={form.identifier} onChange={form.changeIdentifier} />
+
+        {form.isEmail ? (
+          <div className="auth-field">
+            <label htmlFor="email">{t("authEmail")}</label>
+            <input
+              id="email"
+              type="email"
+              value={form.email}
+              onChange={(e) => form.setEmail(e.target.value)}
+              required
+              autoComplete="email"
+              placeholder={t("authEmailPlaceholder")}
+            />
+          </div>
+        ) : (
+          <PhoneField
+            value={form.phone}
+            onChange={form.setPhone}
+            disabled={form.showOtp}
           />
-        </div>
+        )}
 
-        <div className="auth-field">
-          <label htmlFor="password">
-            {t("authPassword")}
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            autoComplete="current-password"
-            placeholder={t("authLoginPasswordPlaceholder")}
+        {form.showPassword && (
+          <div className="auth-field">
+            <label htmlFor="password">{t("authPassword")}</label>
+            <input
+              id="password"
+              type="password"
+              value={form.password}
+              onChange={(e) => form.setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              placeholder={t("authLoginPasswordPlaceholder")}
+            />
+          </div>
+        )}
+
+        {form.showOtp ? (
+          <PhoneOtpPanel
+            phone={form.otpPhone}
+            code={form.otpCode}
+            onCodeChange={form.setOtpCode}
+            onVerify={form.verifyOtp}
+            onResend={form.resendOtp}
+            loading={form.loading}
+            resending={form.resending}
           />
-        </div>
+        ) : (
+          <>
+            {form.isPhone && (
+              <button
+                type="button"
+                className="auth-method-toggle"
+                onClick={() =>
+                  form.changePhoneMethod(
+                    form.usingOtp ? PHONE_METHOD_PASSWORD : PHONE_METHOD_OTP
+                  )
+                }
+              >
+                {form.usingOtp ? t("authUsePassword") : t("authUseOtp")}
+              </button>
+            )}
+            <button type="submit" disabled={form.loading} className="auth-submit">
+              {form.loading
+                ? t("authLoginLoading")
+                : form.usingOtp
+                  ? t("authSendCode")
+                  : t("authLoginTitle")}
+            </button>
+          </>
+        )}
 
-        <button type="submit" disabled={loading} className="auth-submit">
-          {loading ? t("authLoginLoading") : t("authLoginTitle")}
-        </button>
-
-        {error && <p className="auth-error" role="alert">{error}</p>}
+        {form.errorKey && (
+          <p className="auth-error" role="alert">{t(form.errorKey)}</p>
+        )}
+        {form.noticeKey && (
+          <p className="auth-notice" role="status">{t(form.noticeKey)}</p>
+        )}
 
         <p className="auth-switch">
           {t("authSignupPrompt")}{' '}

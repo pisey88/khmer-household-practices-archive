@@ -131,7 +131,7 @@ export default function Navigation() {
     setNavOpen(false);
   };
 
-  const userInitial = user?.email?.charAt(0).toUpperCase() || "A";
+  const userInitial = (user?.email || user?.phone || "").replace(/[^A-Za-z0-9]/g, "").charAt(0).toUpperCase() || "A";
 
   const isAuthRoute = pathname === "/login" || pathname === "/signup";
 
@@ -215,7 +215,7 @@ export default function Navigation() {
               </button>
               {profileOpen && (
                 <div className="nav-profile-menu" role="menu">
-                  <p className="nav-profile-email">{user.email}</p>
+                  <p className="nav-profile-email">{user.email || user.phone}</p>
                   <div className="nav-profile-divider" />
                   <button type="button" className="nav-profile-logout" onClick={handleLogout} role="menuitem">
                     {t("navLogout")}
