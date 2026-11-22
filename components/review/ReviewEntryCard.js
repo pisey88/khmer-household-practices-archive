@@ -8,22 +8,8 @@
 import { useState } from "react";
 import { CAMBODIAN_PROVINCES } from "../../lib/provinces.js";
 import { useLanguage } from "../common/LanguageProvider.js";
+import { formatSubmittedDate } from "../../lib/dateFormat.js";
 import ReviewEntryEditor from "./ReviewEntryEditor.js";
-
-function formatSubmittedDate(value, language) {
-  if (!value) return "";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  const locale = language === "km" ? "km-KH" : "en-US";
-  // UTC keeps the server render and the browser render identical, so
-  // hydration never sees a different date string.
-  return date.toLocaleDateString(locale, {
-    timeZone: "UTC",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
 
 export default function ReviewEntryCard({ entry, busy, onDecision, onSaveEdit }) {
   const { language, t } = useLanguage();

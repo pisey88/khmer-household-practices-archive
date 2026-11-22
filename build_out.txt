@@ -1,0 +1,11 @@
+
+> khmer-living-archive@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.23
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 104s
+   Linting and checking validity of types ...
+   Collecting page data ...
