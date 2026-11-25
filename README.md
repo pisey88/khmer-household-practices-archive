@@ -148,3 +148,9 @@ Demo video link opens in a private window: Yes, https://youtube.com/watch?v=Z0gQ
 Reflection pasted in the Canvas submission: yes
 
 Posted in the Show Your Archive discussion: yes
+
+Reflection pasted in the Canvas submission: yes
+
+Posted in the Show Your Archive discussion: yes
+
+Q&A slot booked for Fri 12/4/2026 9:35 AM - 9:40 AM
