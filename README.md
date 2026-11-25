@@ -68,8 +68,26 @@ AI coding assistants and models were utilized during the development of this rep
 
 ## 6. Sources and credits
 
+Entries document traditional household practices across Cambodian provinces (including Kampong Speu, Siem Reap, Svay Rieng, Kampong Cham, and Kep), with 15 published practices listed in the archive:
+- Traveling by Roteh Ko (ការធ្វើដំណើរដោយរទេះគោ) — Crafts, Siem Reap; contributor: Thy Chan (ធី ចាន់).
+- Kanjer (កញ្ជើ) — Crafts, Siem Reap; contributor: Ny Roth (នីរត្ធ).
+- Handwoven Reed Mat (កន្ទេលត្បាញដោយដៃ) — Household Crafts, Kampong Speu; contributor: Local Weavers.
+- Traditional Rice Noodle Press (ម៉ាស៊ីនកិននំបញ្ចុកបុរាណ) — Food Preparation, Kampong Speu; contributor: អ្នកស្រី កែវច័ន្ទបូរណ៍.
+- Watering with a kettle (Kamsiev) (ការដាំទឹកដោយប្រើកំសៀវ) — Cooking, Kampong Speu; contributor: Om Sok (អ៊ុំ សុខ).
+- Using clay pots (Chhnang Dei) for cooking (ការប្រើឆ្នាំងដីសម្រាប់ដាំស្ល) — Cooking, Kampong Cham; contributor: Don Dy (ដន ឌី).
+- Winnowing Rice by Basket (បក់អង្ករដោយចង្អេរ) — Rice Processing, Kampong Speu; contributor: Grandma SAY NAI.
+- Cooking with a Charcoal Stove (ការដាំស្លដោយចង្ក្រានធ្យូង) — Cooking, Kampong Speu; contributor: Grandma SAY NAI.
+- Lighting the House with Oil Lamps (បំភ្លឺផ្ទះដោយចង្កៀងប្រេង) — Lighting, Kampong Speu; contributor: Grandpa OU LY.
+- Using Tbal Thmor for grinding (ការប្រើប្រាស់ត្បាល់ថ្ម) — Food Preparation, Kampong Speu; contributor: Orm Jinh (អ៊ុំ ជីញ).
+- Traditional fish trap woven from split bamboo (Angrut) (ឧបករណ៍ចាប់ត្រីបែបបុរាណអង្រុត) — Crafts, Kep; contributor: Meng Ly (ម៉េង លី).
+- Making Rice Flour with a Traditional Khmer Machine (កិនម្សៅអង្ករដោយម៉ាស៊ីនខ្មែរបុរាណ) — Food Preparation, Kampong Speu; contributor: Grandma SAY NAI.
+- Stoking Water in Water Tank (ការស្តុកទុកទឹកក្នុងពាងទឹក) — Water Management, Kampong Speu; contributor: Ou Ly.
+- Woven Bamboo Dish Rack (រាវចាន) — Cooking, Svay Rieng; contributor: Sokha Chan (ចាន់ សុខា).
+- Ironing Clothes with a Charcoal Iron (អ៊ុតសម្លៀកបំពាក់ដោយធ្យុងធ្យូង) — Clothing Care, Kampong Speu; contributor: Grandma SAY NAI.
+- Photos / reference material: Sourced/referenced with permission and cultural context including `www.yosothor.org` (`UNSURE` of individual photo-by-photo credit lines where only contributor names were recorded).
+  
 * **Catalogued Artifacts:** Documented from traditional community knowledge across Cambodian provinces (including Kampong Speu, Siem Reap, Svay Rieng, Kampong Cham, and Battambang), featuring contributions from local elders, traditional makers, and community members such as *Thy Chan*, *Sokha Chan*, *Don Dy*, *Ny Roth*, *Grandma Say Nai*, *Grandpa Ou Ly*, and *Orm Jinh*[cite: 1].
-* **Photography:** Visual assets and artifact photos are credited to: www.yosothor.org, 
+* **Photography:** Visual assets and artifact photos are credited to: www.yosothor.org,
 
 ---
 
@@ -125,7 +143,7 @@ jesseorndorff is a collaborator on this repo: yes
 
 Supabase project restored and awake on (November 15, 2026)
 
-Demo video link opens in a private window: not yet
+Demo video link opens in a private window: [Demo Video](youtube.com/watch?v=Z0gQuC-gaaY&feature=youtu.be)
 
 Reflection pasted in the Canvas submission: yes
 
