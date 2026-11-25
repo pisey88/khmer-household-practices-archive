@@ -143,7 +143,7 @@ jesseorndorff is a collaborator on this repo: yes
 
 Supabase project restored and awake on (November 15, 2026)
 
-Demo video link opens in a private window: [Demo Video](youtube.com/watch?v=Z0gQuC-gaaY&feature=youtu.be)
+Demo video link opens in a private window: youtube.com/watch?v=Z0gQuC-gaaY&feature=youtu.be
 
 Reflection pasted in the Canvas submission: yes
 
